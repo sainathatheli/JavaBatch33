@@ -981,13 +981,19 @@ sol:
 }
 }
 
+Note:
+====
+It's because when you enter a number then press Enter, input.nextInt() consumes only the number, not the "end of line". When input.nextLine() executes, it consumes the "end of line" still in the buffer from the first input.
+
+Instead, use input.nextLine() immediately after input.nextInt()
+
+
 How to define methods:
  ======================
 
-     1) instance methods or concrete methods
+     1) instance methods or concrete methods or complete methods
 
      --------------------------------------------------------------
-
     syntax:
     ========
      AccessModifer returntype methodname(if any arguments){
@@ -1040,12 +1046,10 @@ How to define methods:
     accessmodifiers static  returntype methodname(if any arguemnts){
 
      //
-
      }
 
   ex:
   ====
-
     public static void main(String args[]){
 
    //logic
@@ -1054,7 +1058,6 @@ How to define methods:
 
     Abstract Method:
     ================
-
     A abstract method is a method , it  contains  only method declaration
     but not definition .
 
@@ -1112,14 +1115,13 @@ How to define methods:
 
 
 Constructor:
-  ============
+============
 
-  A constructor is used to initialize the object
+A constructor is used to initialize the object
   
-  A constructor is special method whose name is same as
-   classname.
+A constructor is special method whose name is same as a classname.
 
-  A constructor doesnt not return any value not even void also.
+A constructor doesnt not return any value not even void also.
   
   note:
   =====
@@ -1138,8 +1140,7 @@ Constructor:
 
    2) parameterized constructor:
      ===========================
-
-      A constructor is defined with some parameters  with in class.
+     A constructor is defined with some parameters  with in class.
 
    note:
    =====
@@ -1224,16 +1225,14 @@ Constructor:
 
 Arrays:
 =======
+A array is used to store collection of similar types of element.
 
-  A array is used to store collection of similar types of element.
+An array is used to store homogenous types of elements.
 
-  An array is used to store homogenous types of elements.
+Array index start from 0
 
-   Array index start from 0
-
-
-   to Declare a single dimension Array:
-   ==============================
+to Declare a single dimension Array:
+==============================
    syntax:
    =======
   dataType  arrayName[]
@@ -1559,7 +1558,7 @@ Hence, the compiler first checks the string pool to see if the string already ex
 If the string already exists, the new string is not created. 
 Instead, the new reference, example points to the already existed string (Java).
 
-If the string doesn't exist, the new string (Java is created.
+If the string doesn't exist, the new string (Java is created)
 
 
  Difference between (==) operator and equals() method 
@@ -1692,4 +1691,299 @@ public class ExampleOnStr
             System.out.println("Replaced H with M -> " + str2);
 
 }
+}
+
+
+
+
+
+
+Inheritance:
+  ============
+
+   Acquiring the properties and methods  from one class to
+   another class is called inheritance.
+
+     or
+
+   Acquiring the properties and methods from Parent Class(super class) to 
+   Child Class(subclass) is called inheritance.
+
+   the main advantage of inheritance is code  reuseability.
+
+    By using extend keyword  we can get the properties and method from 
+    parent class to child class.
+
+    Inheritance is  also called  as IS-A a relation.
+
+   note:
+   =====
+
+   --  It is recommended to create the object for child class
+    in inheritance concept.
+
+   --In java every class by default extends from Object class.
+
+   -- Object is the super class for all the classes.
+
+
+  syntax:
+  =======
+
+  public  class Parent {
+
+   //data members;
+
+   //member methods;
+
+  }
+
+   public class Child extends Parent{
+
+
+   //it acquires the datamembers and members from parent
+
+  //and it child class data members and member methods.
+     
+   public static void main(String args){
+
+   Child c = new Child();
+
+   //using child object we can call parent class datamemebrs and members.
+
+  //using child object we can call it own data memeber and member methods.
+
+ }
+
+
+  Different types of inheritance:
+  ================================
+
+  1)single inheritance
+
+  2)multiple inheritance
+
+  3)multi-level inheritance
+
+ 
+
+   1) single inheritance:
+   ======================
+
+   it contain single parent and single child.
+
+   ex:
+   ----
+
+   public class A{
+    //variables and methods
+   }
+
+
+  public class B extends A{
+    //variables and methods
+   psvm(){
+
+  }
+ }
+
+
+2) multi-level inheritance class:
+==================================
+
+  A class extend from more than one class and one child
+
+ ex:
+ ===
+
+ there are three class A,B,C
+
+
+  public class A{
+
+    //variables and methods
+ }
+
+  public class B extends A{
+
+     //variables and methods
+ }
+
+  public class c extends B{
+ 
+          //variables and methods
+   public static void main(String args[]){
+
+ //to create the object for c class
+
+  }
+ }
+
+   Example On single inheritance:
+   ========================
+  single inheritance
+
+  a) parent class :-
+   1)create a class named  as First .
+
+   2) this class contain two intansce variables of type int
+
+    3) declare a  method named as getSum(int,int) and retrun type int
+    and access modifier is public
+
+   b) child class:-
+   1)create  a class named as Second which extends from First.
+
+   2) this class contain two instance variables of type float.
+
+   3)declare a method as getMessage(String) and Return type is 
+   String and access modifier is public
+
+   4) create object for  second class and display the
+   First class instance variables and second class
+   instance variables and call the methods of First and second class.
+
+sol:
+===
+
+public class First{
+
+  int num1=10;
+ int num2=20;
+
+   public int getSum(int x,int y){
+
+   int z = x+y;
+   return z;
+
+   }
+
+}
+
+public class Second extends First{
+
+            float  f1=10.0;
+            float f2=20.0;
+
+  public String getMessage(String s){
+ 
+    return "hello "+s+"welcome to java";
+   
+ }
+    
+public static void main(String args[]){
+
+     Second s = new Second();
+
+   System.out.println(s.num1);
+   System.out.println(s.num2);
+    
+   int res = s.getSum(40,40);
+   System.out.println("sum of salaries of two numbers is : "+res);
+
+     System.out.println(s.f1);
+     System.out.println(s.f2);
+      
+     String gt = s.getMessage("sainath");
+     System.out.println(gt);       
+           
+}
+}
+
+
+2) multi-level inheritance
+----------------------------
+Example-level inheritance
+====================
+a) create a class named as A and it contains one method 
+   method name is methodOne()(simple statement(sop) 
+   and retrun type is void .
+
+b)create a Class named B and it contains one method named as
+   methodTwo()--(sop) and return type is void.
+
+c) create a class named C and it contains one method named as
+    methodThree() --(sop) and return type is void
+d)create a object for child class  C and call the methods
+  of A,B,C
+
+
+Has-A relation:
+===============
+A class which contain object reference  or entity reference
+as a instance variable is called composition or Has-a relation.
+
+Example:
+========
+
+There are two class student,Address and
+Student Has-A relation with Address.
+
+
+1)Address Class
+
+public class Address{
+
+  String city;
+  String  state;
+  String country;
+
+ public Address(){
+
+  this.city=null;
+  this.state=null;
+  this.country=null;  
+
+ }
+
+ public Address(String city,String state,String cn){
+
+  this.city=city;
+  this.state=state;
+  country=cn;
+
+ }
+}
+
+
+public class Student{
+
+  int sid;
+  String sname;
+  Address a; //represents student has-a relation with address
+
+  public Student(){
+   this.sid=0;
+   this.sname=null;
+   this.a=null;
+
+  }
+  
+  public Student(int sid,String sname,Address a){
+
+    this.sid=sid;
+    this.sname=sname;
+    this.a=a;
+
+  }
+
+
+   public static void main(String... args){ //var-arg--jdk1.5
+
+     Address a1 = new Address("hyd","telangana","india");
+     
+     Student s= new Student(1001,"Martin",a1);   
+
+     System.out.println("Student Details");
+     
+     System.out.println("Sid is :"+s.sid);
+     System.out.println("Stundent name is :"+s.sname);
+
+     System.out.println("city :"+s.a.city);
+     System.out.println("state "+s.a.state);
+     System.out.println("country :"+s.a.country);
+  
+  }
+
+
 }
