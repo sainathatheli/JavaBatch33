@@ -2385,17 +2385,14 @@ public void methodOne(String s,float f,long l){
    savailable in child class ,it will not execute child class method it will throw an error.
 
 
-
 Interface:
- ==========
+==========
 
  --> An interface which contains set of abstract  methods.
 
  -->Interface used for SRS(software requirement specification or abstract).
 
- -->An interface contain variables and these variable must be
-
- static and final 
+ -->An interface contain variables and these variable must be static and final 
 
    syntax:
   =======
@@ -2414,14 +2411,14 @@ Interface:
 
  --> How to provide implementation
 
-    to provide implementations A class must implements the 
+    to provide implementations a class must implements the 
     interface and provide the implementation for all the abstract method.
 
   note:
  =====
 
   1)if we not provide implementation for any one abstract  method then
-  declare the class as abstract.
+    declare the class as abstract.
 
  2)we can not create the object for abstract class directly.
 
@@ -2667,31 +2664,568 @@ public class ExampleOnInterface2 implements I2{
  we can acheive full abstraction in java 
  using interfaces and abstract class
 
- 
  ex:
  ===
 
  ATM--withdrawal a money
 
 
-
-
-
-
 note:
 ======
 we can declare the class as abstract but even it doesnot contain
 any abstract method to acheive security i.e, for the class
-it will not allow to create  object for the class directly.
+it will not allow us to create  object for the class directly.
 
 ex:
 ====
-
- public abstract class Ex1{
-
+case1:
+-------
+ public abstract class Ex1 implements Interface{
+   //not implemented any abstract method
  //instance methods
 
  }
+
+case2:
+------
+ public abstract class Ex1{
+  
+ //instance methods
+
+ }
+
+
+
+ Access Modifiers:
+  ==================
+  AccessModifiers are used to control(visiable) the access of a class,
+  interface ,variable in package.
+
+   Access Modifiers are
+   ---------------------
+
+    1)Default -- 
+     Default access modifier we can  access with in the same package
+
+   2)private --private access modifier we access with in the class
+
+
+   3)protected -- the scope of protected variable and  methods 
+                  we can access with  same package and
+                   we can access outside the package but 
+                   it should be a child class.
+                
+
+   4)public ---  
+    public accesss modifier is a universal access modifier
+
+
+   Package:
+   ========
+
+   A package is a mechanism to group related classes and interfaces
+   as a single module .
+
+   note:
+   ======
+   package statement should be the firstline in java class.
+
+    
+   syntax:
+   =======
+   package packagename;
+   package  packagename.subpackagename;
+
+   ex:
+   ===
+
+   package com.cg;
+
+   public class Ex3{
+
+
+  }
+
+ Some of the predefined package available in java:
+ =================================================
+
+ 1) java.lang.*;    * - indicates all classes  and interfaces from the packages.
+ 2)java.util.* ;  --collections --- in jdk-->jre-->lib->rt.jar -
+ 3)java.sql.*;  -JDBC           --- oracle -- ojdbc.jar 
+ 4)java.io.*;  -- FILE I/0 Streams --in jdk-->jre-->lib->rt.jar 
+ 5)javax.servlet.http.*;-- Servlets --tomcat -- tomcat/lib/servlet-api.jar
+ 6)java.servlet.*;      - --Servlets tomcat -- tomcat/lib/servlet-api.jar
+  
+  we can use packages in your class using import statement
+  ex:
+  ===
+  import java.util.*;
+
+
+ Exception Handling:
+ ===================
+ 
+ ->An unexpected  or unwanted event which disturbs (abnormal  execution)
+   the  normal flow of execution of program is called exception.
+  
+ -> exception handling is a process of converting
+    abnormal execution of a program  into normal execution.
+
+ -> Exception is a run time error
+
+  
+  ex:
+  ------
+   event :-- invalid input or filedoesnot exist or object reference holding null values,
+              or input mismatch..etc
+
+  There are two types of Exceptions:
+  ===================================
+
+   checked Exception -the exception occured at compile time
+
+   un-checked Exception -the exception occured at run time
+
+          
+   Difference Between Exception and Error:
+   ------------------------------------------------------------
+
+   Exception :-- these exceptions caused by our program and 
+                    these are recoverable
+  
+   Error :--   Error is  not caused by our program code and these
+               error caused due to lack of system resources
+               and these errors are not recoverable.
+
+
+
+    
+  Hierarchy of Exception:
+  ==================
+
+                           Object
+      
+                              |
+                          Throwable
+
+                              |
+               ____________________________________ 
+              |				     |
+            Exception			    Error 
+                 |
+      _______________________________
+      | 		            |  
+  checkedException            uncheckedException
+    |-IOException	                |- RunTimeException
+    |-SQLException   		        |- ArrayIndexOutOfBoundException
+    |-InterruptedException		|- AritheMaticExcpetion
+       ....				......
+   
+  
+    There are two types of Exception
+    1) Built-in or pre-defined Exceptions
+    2) User Defined Exceptions or custom Exception  
+
+
+  
+
+  Example:
+  ========
+   
+   public class Calculation{
+
+   public static void main(String args[] ){
+
+    
+    System.out.print("statement 1");
+     
+    int a=10/0;
+
+    System.out.println("statement2")
+
+ 
+  }
+ 
+  }
+
+   note:
+  ------
+  1)the code which will raise exception is called error code
+    and we need to place  error code  inside in try block.
+
+  2)ANd we need to handle this raised Exception inside catch block
+    by specfiying Exception ClassName.
+
+   syntax:
+   =======
+
+    try{
+
+     business  code;
+
+    }catch(Exceptionclassname reference){
+
+    // handling Exception;
+
+    }finally{  --optional
+
+      //code to close the connection Objects
+   }
+
+  
+    3)suppose in a method exception is occured 
+      internally jvm raise the Exception based on some information
+     1)Exception contains
+                          a)Name of the Exception
+                          b)Description of the Exception
+                          c)Location of the Exception
+   Ex:
+   === At run time JVM displays this Exception
+
+   Exception in thread "main" java.lang.ArithmeticException: / by zero
+        at Calculation.main(Calculation.java:8)
+   sol:
+  -----
+  Name of the Exception : java.lang.ArithmeticException
+  Description of the Exception : / by zero
+  Location of the Exception : main
+   
+
+   4) to handle this exceptions inside catch block
+      we need to call any one  of the method below
+      a) printStackTrace();
+      b)  getMessage(); --it will print  Description of the Exception
+      c) Directly print the exception class reference 
+
+
+
+
+
+Example:
+========
+
+ 1)WAP TO HANDLE  ARITHMETIC EXCEPTION.
+
+ sol:
+ ==
+
+ WAP TO HANDLE  ARITHMETIC EXCEPTION AND NUMBERFORMAT EXCEPTION
+ Read the required values using Scanner
+
+
+
+ ==============================================================
+
+ sol:
+ =====
+
+ public class ExmapleOnException2
+ {
+
+  public static void main(String args){
+ 
+   Scanner s = new Scanner(System.in);
+  
+     try{
+    System.out.println("Enter the value for n : ");
+     int n =Integer.parseInt(s.nextLine());
+           if(10%n==0){
+                
+                System.out.println("10 is divisible by "+ n);
+              
+              }
+
+      }catch(ArithmeticException ae){
+
+           System.out.println(ae.getMessage());
+
+      }catch(NumberFormatException ne){
+
+            System.out.println(ne.getMessage());
+
+       }catch(Exception e){
+
+                e.printStrackTrace();
+        }
+        System.out.println("statement 2");
+ }
+
+ }
+
+
+
+ finally block:
+ ==============
+ 
+ this block is used to write the clean up code
+ i.e,close the connection objects or any file objects to be closed.
+
+ 1)In finally block we can handle exceptions using try and catch block.
+
+ 2)THe finally block   will be executed  whether exception is 
+   occured or not.
+
+
+
+
+ syntax:
+ ========
+
+ try{
+
+ //business logic
+
+ }catch(){
+
+  //handle the exception
+
+ }
+
+ finally{
+   //to clean up code to close the objects
+
+ }   
+   
+
+ case 1:
+ ========
+
+ 
+  try{
+
+  //business code  to get exception
+
+  } --not valid
+  note:
+ ======
+ if we using try block it must contain either a catch block or
+ a finally block
+    
+
+ case 2:
+ ========
+
+
+ try{
+
+ //business code
+ }
+ finally{
+
+  //clean up code
+
+ }
+  
+
+
+
+  case 3:
+  ========
+
+  catch{
+
+  //to handle exception
+
+  }finally{
+ 
+  //clean up code
+
+  }--not valid
+
+  note:
+  =======
+  catch doesnot exists with out try block 
+
+
+
+ 
+  Example 3:
+  ===========
+
+  Wap  to handle ArrayOutOfBoundException using try,catch and finally blocks
+
+  sol:
+  =====
+    import java.util.Scanner;
+   
+    public class ExampleOnException3{
+  
+    public static void main(String args[]){
+             
+     Scanner s = new Scanner(System.in);
+       
+       try{
+               
+           int[] a= new int[3];
+           
+          for(int i=0;i<4;i++){
+
+            System.out.println("Enter the values for array a" );
+              
+                a[i]=s.nextInt();
+
+         }
+         catch(ArithmeticException ae){
+
+            System.err.println("A number cannot be divisble by zero");
+
+         }
+          catch(ArrayIndexOutOfBoundsException aie){
+
+          System.err.println("Size of Array Is Exceeded ,Current Array size is 3");
+
+         }catch(Exception e){
+
+            System.out.println(e.getMessage());
+
+         }
+         }
+   }
+  }  
+
+    
+  throws:
+  =======
+
+    throws keyword used to throws the exceptions with out 
+    handling it(try and catch).
+
+   we need  to write throws keyword along with method signature;
+
+   syntax:
+   =======
+
+     methodname(if any parameters) throws ExceptionName,...{
+          ///Exception code
+      }
+
+
+
+ 
+ Example:4
+ ==========
+  
+  Write a java program to throw the InterruptedException using
+  throws keyword
+
+  sol:
+  ===
+  public class ExampleOnThrows{
+
+  public static void main(String args[]){
+
+   System.out.println("statement-1");
+   try{
+   Thread.sleep(2000);  //it will supsend the execution for certain milli seconds
+   }catch(InterruptedException ie){
+
+  ie.printStackTrace();
+  }
+  System.out.println("statement-2");
+
+  }
+ }
+
+
+
+  throw:
+  ======
+
+    By default jvm is responsible to create the object
+    for the Built-in Exception Classes, to create the object
+    explicity for those Exception classes we need to use throw keyoword
+
+    syntax:
+    =======
+ 
+     throw new ExceptionClassName("user defined message");
+
+    note:
+    =====
+    Mainly throw keyword is used to create the object explicity
+      for userdefined exception classes or custom Exception classes  
+
+
+  
+
+
+
+
+
+ 
+  UserDefinedExceptions:
+  ======================
+
+   the exceptions which already exists inside java which will not
+   meet the business requirement  then we need to go for
+    user-defined exception.
+
+   steps to create userdefined Exception class
+   
+  steps
+  ======
+
+   1) create a user defined  class which extends from Exception,
+        RunTimeExceptionClass  
+
+   2) we need to  create a parameterized constructor 
+       with argument of String type
+
+   3) we need to call super class constructor of Exception
+        inside parameterized constructor of user defined class.
+
+   4)create the object for the user Defined Exception class
+     then throw the exception by using throw keyword.
+
+
+
+
+  Example:
+  ---------
+  
+  1) WAP to create UserDefined Exception 
+  2) WAP to  create object for UserDefined Exception class and
+      throw the Exception using throw keyword
+
+   
+  1)UserDefinedClass Named As : MyException
+  ==========================================
+   
+   sol:
+   -----
+    public  class MyException extends Exception
+    {
+
+          public MyException(String s){
+
+                 super(s);
+
+        }
+    }
+     
+    2)sol:
+    =====    
+    public class UserDefinedExceptionDemo {
+
+       public static void main(String args[]){
+   
+       try{
+                int age=17;
+
+              if(age<18){
+                 throw  new MyException("age should be greater than 18 to vote");                
+   
+              }
+       } catch(MyException e){
+
+              System.err.println(e.getMessage()); 
+
+         }   
+      System.out.println("rest of code");        
+      }
+  
+    }
+
 
 
 
