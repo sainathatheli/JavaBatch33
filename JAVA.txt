@@ -1989,25 +1989,6 @@ public class Student{
 }
 
 
-   final keyword:
-   ==============
-
-   we can use final keyword in three ways
-
-   1)We can a declare a final variable ,along with 
-   declaration we must initilaze that final variable
-   
-   2)final variable will act as constant i.e, value of final 
-   variable cannot be changed(fixed)
-
-   3)we can declare a method as final by using final keyword
-    note:-final method will not particpate in method overriding.
-
-  4)we can declare a class as final and we can create the object for final class but 
-   final class will not particate in inheritance.
- 
-
-
  super keyword:
  ==============
  ->super keyword is used to refer parent class object.
@@ -2695,9 +2676,30 @@ case2:
  }
 
 
+final keyword:
+==============
+we can use final keyword in three ways
 
- Access Modifiers:
-  ==================
+   1)We can a declare a final variable ,along with 
+   declaration we must initilaze that final variable
+   
+   2)final variable will act as constant i.e, value of final 
+   variable cannot be changed(fixed)
+
+   3)we can declare a method as final by using final keyword
+    note:-final method will not particpate in method overriding.
+
+  4)we can declare a class as final and we can create the object for final class but 
+   final class will not particate in inheritance.
+
+
+
+
+
+ 
+
+Access Modifiers:
+==================
   AccessModifiers are used to control(visiable) the access of a class,
   interface ,variable in package.
 
@@ -2715,7 +2717,6 @@ case2:
                    we can access outside the package but 
                    it should be a child class.
                 
-
    4)public ---  
     public accesss modifier is a universal access modifier
 
@@ -2801,7 +2802,7 @@ case2:
 
     
   Hierarchy of Exception:
-  ==================
+  =======================
 
                            Object
       
@@ -2853,7 +2854,7 @@ case2:
   1)the code which will raise exception is called error code
     and we need to place  error code  inside in try block.
 
-  2)ANd we need to handle this raised Exception inside catch block
+  2)ANd for error code we need to handle the raised Exception inside catch block
     by specfiying Exception ClassName.
 
    syntax:
@@ -2912,8 +2913,6 @@ Example:
  WAP TO HANDLE  ARITHMETIC EXCEPTION AND NUMBERFORMAT EXCEPTION
  Read the required values using Scanner
 
-
-
  ==============================================================
 
  sol:
@@ -2928,7 +2927,7 @@ Example:
   
      try{
     System.out.println("Enter the value for n : ");
-     int n =Integer.parseInt(s.nextLine());
+     int n =Integer.parseInt(s.nextLine()); //converting the string into Int
            if(10%n==0){
                 
                 System.out.println("10 is divisible by "+ n);
@@ -3132,8 +3131,10 @@ Example:
   ======
 
     By default jvm is responsible to create the object
-    for the Built-in Exception Classes, to create the object
-    explicity for those Exception classes we need to use throw keyoword
+    for the Built-in Exception Classes and throws the exception messages(printStackTrace)
+     
+    Explicity for those predefinedException classes we need to create the object using throw keyoword
+    based on condition.
 
     syntax:
     =======
@@ -3143,29 +3144,21 @@ Example:
     note:
     =====
     Mainly throw keyword is used to create the object explicity
-      for userdefined exception classes or custom Exception classes  
+      for userdefined exception classes or custom Exception classes. 
 
 
-  
-
-
-
-
-
- 
-  UserDefinedExceptions:
+   UserDefinedExceptions:
   ======================
-
    the exceptions which already exists inside java which will not
    meet the business requirement  then we need to go for
-    user-defined exception.
+   user-defined exception or custom exception.
 
-   steps to create userdefined Exception class
+  steps to create userdefined Exception class
    
   steps
   ======
 
-   1) create a user defined  class which extends from Exception,
+   1) create a user defined  class which extends from Exception or
         RunTimeExceptionClass  
 
    2) we need to  create a parameterized constructor 
