@@ -1,0 +1,219 @@
+what is JPA?
+------------
+JPA stands for Jakarta Persistence API (JPA), formerly known as Java Persistence API.
+
+JPA is just a specification that facilitates object-relational mapping to manage relational data in Java applications. 
+
+It provides a platform to work directly with objects instead of using SQL statements.
+
+JPA defines only specifications, it does not provide an implementation. 
+
+JPA implementation is provided as a reference implementation by the vendors developing O/R Mappers such as Hibernate, EclipseLink, and Apache OpenJPA.
+
+JPA permits the developer to work directly with objects rather than with SQL statements. 
+The JPA implementation is typically called persistence provider.
+
+What are the advantages of JPA?
+------------------------------
+The advantages of JPA are given below.
+
+We no need to create SQL statements if we use JPA. We directly persist an object into the database.
+
+The burden of interacting with the database reduces significantly by using JPA
+
+The user programming becomes easy by concealing the O/R mapping and database access processing
+
+The cost of creating the definition file is reduced by using annotations
+
+We can merge the applications used with other JPA providers
+
+Using different implementations can add the features to the standard Implementation which can later be the part of JPA specification
+
+
+What is ORM(Hibernate)?
+-------------
+Object-relational mapping or ORM is the programming technique to map application domain model objects to the relational database tables.
+
+
+@Entity : It maps model class with DB Table and Variables with columns
+
+@Id: It indicates primary Key. Every Table must Contain Primary key.
+
+@Table :- It is Optional , We can provide column details like column name.
+*** if @Table, @Column are not provided then className is TableName,variableName is
+    ColumnName(taken by Hibernate);
+
+Hibernate Configuration File(hibernate.cfg.xml):- 
+
+for one application we should provide one configuration file 
+*) it is XML Format
+*) it contains details like properties + mapping classes 
+Cfg= property + mapping class
+
+*) Here Property means data in key= value format.
+
+Keys are given below (8 keys)
+-------------------------------
+1) hibernate.connection.driver_class=oracle.jdbc.driver.OracleDriver
+2) hibernate.connection.url=jdbc:oracle:thin@localhost:1521:xe
+3) hibernate.connection.username=system
+4) hibernate.connection.password=system
+5) hibernate.dialect=org.hibernate.dialect.OracleDialect
+6) hibernate.show_sql=true
+7) hibernate.format_sql=true
+8) hibernate.hbm2ddl.auto=update
+
+1. dialect: dialect is class it will be generate the SQL Query when programmer performs 
+operation, for every database dialect is different
+
+EX:- Oracle DB= OracleDialect
+ MySQL DB= MySQLDialect
+ Sybase DB= SybaseDialect
+ H2 DB = H2Dialect
+ All dialect are defined in package org.hibernate.dialect
+
+2. show_sql:- it is a Boolean property default value is false. To see generated SQL on 
+Console make value as true.
+
+3. format_sql:- it is a Boolean property default value is false. It will display sql clause by 
+clause (part by part)
+
+Ex:- Select
+Eid ,nam
+From 
+Emptab
+Where 
+Eid=10
+Value must be set to ‘true’ 
+
+4. hbm2ddl.auto:- here hbm= hibernate mapping 
+ddl=Data definition language(create /alter/drop in SQL)
+
+it has four possible value. 
+Those are:-
+a. validate (default value)
+b. create 
+c. update
+d. create-drop
+
+Validate:- in this case hibernate creates no tables programmer has to create or modify tables 
+manually. It is only default value.
+
+Create:- hibernate creates always new tables, if table exist then it will be drop.
+
+Update:- it creates new table if table not exits else uses same tables. 
+
+Create-drop:- this option is used for testing process not in development, it’s new table and 
+performs operation at last table will be drop.
+
+configuration file must follow naming rule given by hibernate for auto-detection.
+Naming rule is: hibernate.cfg.xml
+
+hibernate.cfg.xml
+-----------------
+<hibernate-configuration>
+<session-factory>
+<property name=”key”>value</property>
+…………………………………………………………………….
+………………………
+<mapping class=”--------”/>
+</session-factory>
+</hibernate-configuration>
+
+Example code with key=value(mysql)
+hibernate.cfg.xml
+-----------------
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+<session-factory>
+<property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/training
+</property>
+<property name="hibernate.connection.username">root</property>
+<property name="hibernate.connection.password">root</property>
+<property name="hiberante.dialect"> org.hibernate.dialect.MySQL8Dialect</property>
+<property name="hibernate.show_sql">true</property>
+<property name="hibernate.format_sql">true</property>
+<property name="hibernate.hbm2ddl.auto">update</property>
+<mapping class="com.app.model.Employee"/>  //ORM Mapping
+</session-factory>
+</hibernate-configuration>
+
+
+Coding Steps with Concept:-
+----------------------------------
+1. Create empty configuration object using class “configuration” given by hibernate.
+Configuration cfg=new Configuration();
+
+2. Load hibernate.cfg.xml file into above object using method configure()
+cfg.configure();
+
+** if XML file name or location is different then code will be:
+cfg.configure(“abcd.cfg.xml”);
+cfg.configure(“com/app/one.cfg.xml”);
+
+3. Create object to SessionFactory using cfg, which load driver class and creates connection and 
+   statement type.
+
+SessionFactory sf=cfg.buildSessionFactory();
+
+4. To perform operations (Task) create one Session object using SF.
+
+Session ses=sf.openSession();
+
+5. Start one Transaction if operation type is non-select (insert, update and delete). 
+If select operation then Tx not required.
+
+Transaction tx=ses.beginTransaction();
+
+6. Perform operation using session 
+…………………………..
+…………………………..
+7. Either commit or rollback if Tx is started. 
+tx.commit ()/tx.rollback();
+
+8. Finally close Session
+
+  ses.close();
+
+
+
+
+download hibernate orm jar file:
+---------------------------------
+https://sourceforge.net/projects/hibernate/files/hibernate-orm/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
