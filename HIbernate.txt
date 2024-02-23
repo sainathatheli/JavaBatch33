@@ -1356,3 +1356,87 @@ tx.commit();
 }
 
 }
+
+
+MAVEN: 
+-------
+It is project build Tool ..
+
+Here we need not to download any jars and we need not to add the jars explicitly(buildpath-->configure buildpath...).
+
+Instead of the we need to configure project required jars in mavenproject under pom.xml
+pom.xml(project object model) using <dependencey> tag under <dependenecies>
+
+If we want to create core java project using maven  -->archetypes -->quickstart
+
+to create webproject using maven -->archetypes--->webapp
+
+Note:
+-----
+In mavenproject artifactid will act as your projectname
+
+
+Assignments:
+---------------
+
+@ONETOONE
+@MANYTOMANY
+@ONETO MANY
+
+Generators:
+------------
+@GeneratedValue (INcrement,AUTO...Sequence)for @Id columne
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+New JPA : Jakarata Persistence API
+---------------------------------
+6.x.x.Final :
+-------------
+
+public class HibernateUtil {
+	private static StandardServiceRegistry registry;
+	private static SessionFactory sessionFactory;
+
+	public static SessionFactory getSessionFactory() {
+		if (sessionFactory == null) {
+			try {
+				// Create registry
+				registry = new StandardServiceRegistryBuilder().configure().build();
+
+				// Create MetadataSources
+				MetadataSources sources = new MetadataSources(registry);
+
+				// Create Metadata
+				Metadata metadata = sources.getMetadataBuilder().build();
+
+				// Create SessionFactory
+				sessionFactory = metadata.getSessionFactoryBuilder().build();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				if (registry != null) {
+					StandardServiceRegistryBuilder.destroy(registry);
+				}
+			}
+		}
+		return sessionFactory;
+	}
+
+	public static void shutdown() {
+		if (registry != null) {
+			StandardServiceRegistryBuilder.destroy(registry);
+		}
+	}
+}
