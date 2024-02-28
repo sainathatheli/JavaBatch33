@@ -1,0 +1,108 @@
+Spring is the most popular application development framework for enterprise Java. 
+Millions of developers around the world use Spring Framework to create high performing, easily 
+testable, and reusable code.
+
+Spring framework is an open source Java platform. It was initially written by Rod Johnson 
+and was first released under the Apache 2.0 license in June 2003.
+
+The core features of the Spring Framework can be used in developing any Java application, 
+but there are extensions for building web applications on top of the Java EE platform. 
+Spring framework targets to make J2EE development easier to use and promotes good 
+programming practices by enabling a POJO-based programming model.
+
+SpringCore:
+-----------
+Dependency Injection (DI):
+--------------------------
+
+The technology that Spring is most identified with is the Dependency Injection 
+(DI) flavor of Inversion of Control. The Inversion of Control (IoC) is a general concept, 
+and it can be expressed in many different ways. Dependency Injection is merely one 
+concrete example of Inversion of Control.
+
+What is dependency injection exactly? Let's look at these two words separately. Here the 
+dependency part translates into an association between two classes. For example, class A 
+is dependent of class B. Now, let's look at the second part, injection. All this means is,
+class B will get injected into class A by the IoC.
+
+Dependency injection can happen in the way of passing parameters to the constructor or 
+by post-construction using setter methods. As Dependency Injection is the heart of Spring 
+Framework
+
+Note:
+-----
+we can spring core module we need to add configure two jar files in pom.xml.
+
+spring-core      --5.3.8
+spring-context   --5.3.8
+
+
+
+
+Injection (I) / Dependency Injection(DI) :
+Injection means “Provide data to variable (dependency) “ 
+
+1. Setter Injection
+2. Constructor Injection
+
+
+1. Injection(I) / Dependency Injection (DI) :
+-----------------------------------
+Setter dependency injection (SDI) by using set method of variable 
+container provides data. It uses default constructor and set 
+method.
+Ex: (Overview code)
+Class A { int sid ;}
+A a = new A();
+a.setSid(25);
+
+2. Constructor Injection(CI) or Constructor Dependency(DDI) : 
+--------------------------------------------------------------
+Container provides data while creating object using “Parameter 
+Constructor” It is called as (CI) / (CDI)
+
+class A{int sid;}
+A a1 = new A(55);
+
+Spring Core Programming:
+-----------------------
+Spring Container takes 2 inputs form programming those are:
+1. Spring Bean (class + rules by container)
+2. Spring config file (XML / Java / Annotation)
+
+XML Configuration (Basic Syntax):
+-----------------------------------
+<bean class = “_____” name = “_______”>
+<property name = “_________”>
+<value> ________ </value>
+<property>
+</bean>
+
+Spring Dependency Injection XML Based Configuration
+----------------------------------------------------
+We will create Spring configuration file with below data, file name can be anything. 
+applicationContext.xml code:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+<bean id="emp" class="com.training.bean.Employee">
+<property name="value" value="">
+</bean>
+
+</beans>
+
+
+
+Note:
+-----
+1. <bean> :: Indicate object , which will be created in Spring container.
+2. <property> :: It will call set method of given variable to provide data.
+3. <value> :: It indicates data to variable.
+4. All above tags are case-sensetive must be written in lower-case only
+
+
