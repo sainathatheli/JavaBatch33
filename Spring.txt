@@ -106,3 +106,899 @@ Note:
 4. All above tags are case-sensetive must be written in lower-case only
 
 
+
+
+Collection Configuration Using Spring Java Config Code:
+=======================================================
+
+Jave Bean:
+----------
+Product.java
+
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+public class Product {
+
+private List<String> data;
+private Set<String> models;
+private Map<Integer , String> modes;
+private Properties context;
+
+public Product() {
+super();
+}
+public List<String> getData() {
+returndata;
+}
+public void setData(List<String>data) {
+this.data = data;
+}
+public Set<String> getModels() {
+return models;
+}
+publicvoid setModels(Set<String>models) {
+this.models = models;
+}
+public Map<Integer, String> getModes() {
+return modes;
+}
+publicvoid setModes(Map<Integer, String>modes) {
+this.modes = modes;
+}
+public Properties getContext() {
+return context;
+}
+publicvoid setContext(Properties context) {
+this.context = context;
+}
+@Override
+public String toString() {
+return"Product [data=" + data + ", models=" + 
+models + ", modes=" + modes + ", context=" + context + 
+"]";
+}
+}
+
+
+java Configuration class:
+-------------------------
+
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+
+@Configuration
+publicclass AppConfig {
+@Bean
+public Product pdtObj() {
+Product p = new Product();
+p.setData(lstData());
+p.setModels(setData());
+p.setModes(mapData());
+p.setContext(propsData());
+returnp;
+}
+public List<String> lstData(){
+List<String>lst = new LinkedList<>();
+lst.add("PEN");
+lst.add("PENCIL");
+returnlst;
+}
+public Set<String> setData(){
+Set<String>set = new HashSet<>();
+set.add("CAR");
+set.add("BYKE");
+returnset;
+}
+public Map<Integer , String> mapData(){
+Map<Integer , String>map = new LinkedHashMap<>();
+map.put(10, "TV");
+map.put(20, "LACTOP");
+map.put(30, "MOBILE");
+returnmap;
+}
+
+public Properties propsData() {
+Properties p = new Properties();
+p.put(1 , "AC");
+p.put(2, "COOLER");
+returnp;
+}
+}
+
+
+App.java:
+==========
+import org.springframework.context.ApplicationContext;
+import
+org.springframework.context.annotation.AnnotationConfigApp
+licationContext;
+import com.app.bean.Product;
+import com.app.config.AppConfig;
+public class Test {
+public staticvoid main(String[] args) {
+ApplicationContext ac =new AnnotationConfigApplicationContext(AppConfig.class);
+Product p = ac.getBean("pdtObj" , Product.class);
+System.out.println(p);
+}
+}
+
+
+Reference Type Dependency Configuration using Spring java Config 
+------------------------------------------------------------------
+code:
+Syntax:
+parentObj.setVariable(childObj())
+To link child object with parent object follow above syntax, if not used value will be null.
+**Configure child first and parent next.
+
+
+EMployee has-a  Address (ref - spring xml configuration):
+----------------------
+Code example: demoOnHasARelation(EMployee -has a - Address)
+
+
+
+
+
+Annotation configuration in Spring :
+-------------------------------------
+Compared with other configurations this is very faster in coding and execution 
+also. But not applicable for pre-defined classes configuration. We can configure 
+only programmer defined (having .java code) classes only.
+
+Types of Annotations for configuration:
+
+1. StereoType Annotations (Bean creation)
+2. Data Annotations (Injection)
+
+1. StereoType Annotation:
+
+There are 5 types , list given as:
+@Component 
+@Controller
+@Service
+@Repository
+@RestController
+
+
+2. Data Annotation
+@Value
+@Autowired (for scope concept : @Scope)
+
+
+1. StereoType Annotations :
+
+An annotation which detects the class and creates the object is 
+known as StereoType Annotation.
+a) Activate Annotation with base-package.
+b) Provide @Component on top of the class.
+
+*** code to activate Annotations:
+<context :component-scan base-package=”----“/>
+
+What is base-package.
+
+Ans. It is a package name given by programmer to search and its sub packages.
+
+Ex: if base-package=”com.app” then meaning is “app” package classes and all 
+its sub package classes are selected for object creation.
+
+Example:
+<context:component-scan base-package=”com.app”/> classes detected (scan)
+
+
+2. @Component:
+---------------
+It must be applied on class (not applicable for interface and abstract class). It 
+will inform Container to create object of current class.
+
+If no object name is provided then class name (first letter small) is 
+taken as object name (camel-case-conversion).
+
+Ex: package com.app;
+
+@Component 
+public class Employee{ }
+
+/ Here object name is :employee
+
+package com.app;
+@Component (“empObj”) 
+public class Employee{ }
+//Here object name is :empObj
+
+1. @Component : Create Object
+2. @Controller : Create object +Http Req
+3. @Service : Create Object +Transaction Management +Link Layers 
+(Integration).
+4. @Repository : Create Object +DB Operations.
+5. @RestController:Create object +RestFul WebServices
+
+
+Example:
+--------
+Employee.java
+
+import org.springframework.stereotype.Component;
+@Component("empObj")
+publicclass Employee {
+rivate int empId;
+private String empName;
+
+public Employee() {
+super();
+}
+publicint getEmpId() {
+returnempId;
+}
+publicvoid setEmpId(intempId) {
+this.empId = empId;
+}
+public String getEmpName() {
+returnempName;
+}
+publicvoid setEmpName(String empName) {
+this.empName = empName;
+}
+@Override
+public String toString() {
+return"Employee [empId=" +empId+",empName="+ empName + 
+"]";
+}
+}
+
+xml configuration:
+-------------------
+<?xmlversion="1.0"encoding="UTF-8"?>
+<beansxmlns="http://www.springframework.org/schema/beans"
+xmlns:p="http://www.springframework.org/schema/p"
+xmlns:context="http://www.springframework.org/schema/conte
+xt"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="
+ http://www.springframework.org/schema/beans 
+ 
+http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://www.springframework.org/schema/context 
+http://www.springframework.org/schema/context/spring-context.xsd
+">
+<context:component-scanbase-package="com.app"/>
+</beans>
+
+
+App.java:
+---------
+import org.springframework.context.ApplicationContext;
+import
+org.springframework.context.support.ClassPathXmlApplicatio
+nContext;
+import com.app.bean.Employee;
+public class Test {
+public static void main(String[] args) {
+ApplicationContext ac = new
+ClassPathXmlApplicationContext("config.xml");
+Employee e = ac.getBean("empObj" , Employee.class);
+e.setEmpId(10);
+e.setEmpName("Vicky Raj");
+System.out.println(e);
+}
+}
+
+b.Using Java Config Process. (no Xml file)
+-------------------------------------------
+@Component("empObj")
+publicclass Employee {
+privateintempId;
+private String empName;
+public Employee() {
+super();
+}
+publicint getEmpId() {
+returnempId;
+}
+publicvoid setEmpId(intempId) {
+this.empId = empId;
+}
+public String getEmpName() {
+returnempName;
+}
+publicvoid setEmpName(String empName) {
+this.empName = empName;
+}
+@Override
+public String toString() {
+return"Employee [empId=" + empId+",empName="+empName+ "]";
+}
+}
+
+2. AppConfig.java
+
+importorg.springframework.context.annotation.Bean;
+import
+org.springframework.context.annotation.ComponentScan;
+import
+org.springframework.context.annotation.Configuration;
+importcom.app.bean.Employee;
+
+@Configuration
+@ComponentScan(basePackages = "com.app")
+publicclass AppConfig { } 
+
+
+App.java
+--------
+import org.springframework.context.ApplicationContext;
+import
+org.springframework.context.annotation.AnnotationConfigApp
+licationContext;
+import com.app.bean.Employee;
+public class Test {
+public staticvoid main(String[] args) {
+ApplicationContext ac = new
+AnnotationConfigApplicationContext(AppConfig.class);
+Employee emp = ac.getBean("empObj" , Employee.class);
+System.out.println(emp);
+}
+}
+
+Providing scope in Annotation Configuration:
+--------------------------------------------
+use @Scope in annotation Config to define bean scope.
+Ex:
+Package com.app;
+
+@Component
+@Scope(“prototype”)
+Public class Employee { }
+
+** Test class :same as before
+
+** @Scope can be written along with even @Controller, @Service, 
+@Repository and @RestController also.
+
+
+@Value (Basic data Annotation):
+--------------------------------
+This annotation is used to inject data to bean (object) in case of 
+Annotation configuration (used along with stereo type Annotation 
+Configuration).
+
+It is applicable for Primitive Type, Collection and Reference Type.
+
+Data can be injected using simple value, expression, standalone Collection, Object reference, Object reference data.
+
+Supports Data reading from properties file also.
+
+Here # indicates object-id (obj ref) $ indicates property key.
+
+Annotation : Dependency
+------------------------
+@Value : Primitive Type
+@Value + SAC : Collection Type
+@Value + Child obj-id : Reference Type
+
+  Or
+
+**@Autowired
+
+--------------
+Example for primitive and collection configuration using annotation config in 
+spring framework:
+
+Bean class:
+-----------
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component("empObj")
+publicclass Employee {
+
+@Value("100")
+private int empId;
+
+@Value("Vicky raj")
+private String empName;
+
+@Value("5.5")
+privatedoubleempSal;
+
+@Value("#{lstObj}")
+private List<String>cords;
+
+@Value("#{mapObj}")
+private Map<Integer , String>stands;
+
+@Value("#{propObj}")
+private Properties props;
+
+public Employee() {
+super();
+}
+
+publicint getEmpId() {
+returnempId;
+}
+publicvoid setEmpId(intempId) {
+this.empId = empId;
+}
+public String getEmpName() {
+returnempName;
+}
+publicvoid setEmpName(String empName) {
+this.empName = empName;
+}
+publicdouble getEmpSal() {
+returnempSal;
+}
+publicvoid setEmpSal(doubleempSal) {
+this.empSal = empSal;
+}
+public List<String> getCords() {
+returncords;
+}
+publicvoid setCords(List<String>cords) {
+this.cords = cords;
+}
+public Map<Integer, String> getStands() {
+returnstands;
+}
+publicvoid setStands(Map<Integer, String>stands) {
+this.stands = stands;
+}
+public Properties getProps() {
+returnprops;
+}
+publicvoid setProps(Properties props) {
+this.props = props;
+}
+
+@Override
+public String toString() {
+return"Employee [empId=" + empId + ", empName=" + 
+empName + ", empSal=" + empSal + ", cords=" + cords
++ ", stands=" + stands + ", props=" + props + "]";
+}
+}
+
+
+
+
+
+==============================================================================
+LOADING PROPERTIES FILE INTO JAVA CONFIG
+
+1. Create .properties files(one or more).
+2. Load into spring container using @PropertySource ({..,..,..}).
+3. Spring container create object to store all key and value object type is 
+Environment(I).
+	For stand alone application implementation class is 
+	MorkEnvironment(C).
+	For Web application implementation class is 
+	StanderdServletEnvironment(C) 
+	These object are created and data loaded by Spring Container.
+4. Link Environment object with save config class using @Autowired.
+5. Read data using env.getProperty(“key”) or env.getProperty(“key” , 
+T.class).
+getProperty(String key) : String
+getProperty(String key , T.class)
+
+
+bean class:
+-----------
+package com.app.bean;
+public class Product {
+private int pId;
+private String pname;
+
+public Product() {
+super();
+}
+publicint getpId() {
+returnpId;
+}
+public void setpId(intpId) {
+this.pId = pId;
+}
+public String getPname() {
+returnpname;
+}
+public void setPname(String pname) {
+this.pname = pname;
+}
+@Override
+public String toString() {
+return"Product [pId=" + pId + ", pname=" + pname + "]";
+}
+}
+
+MyProp.propeties
+-----------------
+#This is properteis file 
+id = 10
+name = mouse
+
+Java configuration Class:
+-------------------------
+AppConfig.java
+
+@Configuration
+@PropertySource({"MyProp.properties"})
+publicclass AppConfig {
+
+@Autowired
+private Environment env;
+
+@Bean
+public Product pdtObj() {
+
+Product p = new Product();
+p.setpId(env.getProperty("id" , Integer.class));
+p.setPname(env.getProperty("name"));
+
+return p;
+}
+}
+
+App.java:
+----------
+publicclass Test {
+public static void main(String[] args) {
+
+Application Context ac = new AnnotationConfigApplicationContext(AppConfig.class);
+Product p = (Product)ac.getBean("pdtObj");
+System.out.println(p);
+
+}
+}
+
+
+
+Dependency Check In Spring:
+----------------------------
+In spring injection (providing data to variable ) is optional , to make it 
+required use annotation @Required over set method of that variable.
+
+** Making one dependency injection is required is called dependency check.
+**Activate annotation using <context:annotation-config/>
+
+Ex:
+---
+public class Product 
+{
+Private int productId;
+Private String productName;
+//constructor
+@Required
+public void setProductId(int productId)
+{
+This.productId=productId;
+}
+//setters & getters, toString
+
+}
+
+1. Spring configuration file:--
+------------------------------------
+<beans xmlns----------------------------->
+<context:annotation-config/>
+<bean class=”com.training.bean.Product” name=”p”>
+</bean>
+
+2. Test class
+----------------
+read and print “p” object expected output:--
+Exception: BeanCreationException…….
+BeanInitializationException : Property “productId” is required for bean ‘p’.
+
+Solution
+---------
+write below code in <bean>
+<property name=”productId” value=”66”/>
+(set product id data to avoid exception)
+
+Collection Injection:
+---------------------
+public class Employee {
+private List<String>models;
+private Map<Integer , String>codes;
+private Properties data;
+
+public Employee() {
+super();
+}
+public List<String> getModels() {
+returnmodels;
+}
+publicvoid setModels(List<String>models) {
+this.models = models;
+}
+public Map<Integer, String> getCodes() {
+returncodes;
+}
+publicvoid setCodes(Map<Integer, String>codes) {
+this.codes = codes;
+}
+public Properties getData() {
+returndata;
+}
+publicvoid setData(Properties data) {
+this.data = data;
+}
+@Override
+public String toString() {
+return"Employee [models=" + models + ", codes=" + 
+codes + ", data=" + data + "]";
+}
+}
+
+
+
+Bean Scope In Spring
+----------------------
+It indicates “how long bean (Object) should be in Spring Container”.
+
+Possible Bean Scope Are Given as:
+
+1. Singleton (default scope)
+2. Prototype
+3. Request (Spring WEB-MVC servlets)
+4. Session (Spring WEB-MVC servlets)
+5. Global context(String WEB-MVC portlets)
+
+1. Singleton:
+------------
+It is only default scope given to every <bean> in Spring Container. 
+It indicates one object is created by container when it is started. 
+Maintains same object end container is destroyed.
+
+** One object per one configuration.
+
+2. Prototype 
+-------------
+It create new object in Spring container on every access by Application / 
+Programmer.
+
+3. Request 
+----------
+Container creates new object for every request , same maintained until 
+response is commited. Works only in web application (using servlet) in 
+spring.
+
+4. Session
+-----------
+Container creates new object for every new session it is maintained until 
+session invalidated. Work only in web application (using servlet) in 
+spring.
+
+5. Global context/session
+--------------------------
+It works in portlets based web application. It creates one object for all 
+portlet access.
+
+
+Note:
+-----
+Read one bean using getBean() method in test class multiple time.
+If same hashcode is returned every time means scope is singleton , else if every 
+time new hashcode scope is prototype.
+
+publicclass Employee {
+private intempId;
+public Employee() {
+super();
+}
+publicint getEmpId() {
+returnempId;
+}
+publicvoid setEmpId(intempId) {
+this.empId = empId;
+}
+@Override
+public String toString() {
+return"Employee [empId=" + empId + "]";
+}
+}
+
+springconfiguration file:
+-------------------------
+<beanclass="com.app.core.Employee"name="empObj" scope 
+= “singleton”
+p:empId="10"
+/>
+</beans>
+
+testcode:
+----------
+import org.springframework.context.ApplicationContext;
+import
+org.springframework.context.support.ClassPathXmlApplicatio
+nContext;
+publicclass Test {
+publicstaticvoid main(String[] args) {
+ApplicationContext ac = new
+ClassPathXmlApplicationContext("config.xml");
+Employee e1 = ac.getBean("empObj" , 
+Employee.class);
+System.out.println(e1.hashCode());
+Employee e2 = ac.getBean("empObj" , 
+Employee.class);
+System.out.println(e2.hashCode());
+Employee e3 = ac.getBean("empObj" , 
+Employee.class);
+System.out.println(e3.hashCode());
+}
+}
+
+
+
+Note:
+-----
+If two classs are connected with HAS-A relation then possible combinations fro Bean score are given as.
+SNO. 	PARENT 		CHILD 		STATUS
+1. 	Singlton 	Singlton 	Working Fine
+2. 	Singlton 	Prototype 	Working Fine
+3. 	Prototype 	Singlton 	Working Fine
+4. 	Prototype 	Prototype 	Not Working 
+
+Here if parent bean having scope “Singlton” and child bean having 
+scope “Prototype” in spring container.
+
+Container creating parent and child objects and linked then(Injected) 
+first time, but second time onwards new child object is created but link 
+Is not updated, so expected output not matched with actual output.
+
+
+Lookup method Injection (LMI):
+-----------------------------
+Spring container provides a logic to method which will check “is new 
+child created or not?” if it is created then this method will update the 
+links it means new child object is injected to parent object on every 
+access.
+
+Steps to modify code in Parent class and Parent config (no code change child 
+class or child)
+
+Parent class:
+1. remove set method of child type.
+2. write one abstract method that must return child type with any methodName.
+   public abstract ChildType methodName()
+3. Make Parent class also abstract.
+4. call abstract method in getChild(…)
+
+(Parent bean code change)
+1. Remove <property> tag for ref injection.
+2. write new tag <lookup-method/>
+Having method =” “ (abstract method name) 
+
+
+
+code:
+-----
+
+publicclass Address {
+privateintaddrId;
+private String loc;
+Address() {
+super();
+}
+publicint getAddrId() {
+returnaddrId;
+}
+publicvoid setAddrId(intaddrId) {
+this.addrId = addrId;
+}
+public String getLoc() {
+returnloc;
+}
+publicvoid setLoc(String loc) {
+this.loc = loc;
+}
+@Override
+public String toString() {
+
+return"Address [addrId=" + addrId + ", loc=" + loc + "]";
+}
+}
+
+
+
+Spring Bean (Employee.java)
+-----------------------------
+
+public class Employee {
+private int empId;
+private String empName;
+private double empSal;
+private Address addr;
+
+Employee() {
+super();
+}
+publicint getEmpId() {
+returnempId;
+}
+publicvoid setEmpId(intempId) {
+this.empId = empId;
+}
+public String getEmpName() {
+returnempName;
+}
+publicvoid setEmpName(String empName) {
+this.empName = empName;
+}
+publicdouble getEmpSal() {
+returnempSal;
+}
+publicvoid setEmpSal(doubleempSal) {
+this.empSal = empSal;
+}
+public Address getAddr() {
+return getAddress();
+}
+publicabstract Address getAddress();
+@Override
+public String toString() {
+return"Employee [empId=" + empId + ", 
+empName=" + empName + ", empSal=" + empSal + ", addr=" + 
+addr + "]";
+}
+}
+
+spring xml file:
+----------------
+<beanclass="com.vicky.Address"name="addrObj"scope="prototy
+pe">
+<propertyname="addrId"value="10"/>
+<propertyname="loc"value="Patna"
+/>
+</bean>
+<beanclass="com.vicky.Employee"name="empObj"scope="singlet
+on"
+p:empId="101"
+p:empName="Vicky Raj"
+>
+<lookup-methodname="getAddr"bean="addrObj"/>
+</bean>
+</beans>
+
+
+publicclass Test {
+publicstaticvoid main(String[] args) {
+ApplicationContext ac = new
+ClassPathXmlApplicationContext("config.xml");
+Employee e1 = (Employee)ac.getBean("empObj");
+System.out.println(e1.hashCode());
+System.out.println(e1.getAddr().hashCode());
+Employee e2 = (Employee)ac.getBean("empObj");
+
+System.out.println(e2.hashCode());
+System.out.println(e2.getAddr().hashCode());
+Employee e3 = (Employee)ac.getBean("empObj");
+System.out.println(e3.hashCode());
+System.out.println(e1.getAddr().hashCode());
+}
+}
+
+}
+
+Execution of LMI:
+------------------
+Spring container provides logic to abstract method I below format.
+
+1. Create one List of child type.
+2. If new object is created then add new child to List.
+3. Parent should be linked to last index child object of above list using 
+setChild(list.get(size-1)) logic internally.
