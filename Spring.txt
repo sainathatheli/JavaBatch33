@@ -272,7 +272,7 @@ There are 5 types , list given as:
 
 
 2. Data Annotation
-@Value
+@Value //internally it will act as setter injection
 @Autowired (for scope concept : @Scope)
 
 
@@ -359,11 +359,11 @@ return"Employee [empId=" +empId+",empName="+ empName +
 
 xml configuration:
 -------------------
-<?xmlversion="1.0"encoding="UTF-8"?>
-<beansxmlns="http://www.springframework.org/schema/beans"
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
 xmlns:p="http://www.springframework.org/schema/p"
-xmlns:context="http://www.springframework.org/schema/conte
-xt"
+xmlns:context="http://www.springframework.org/schema/context"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="
  http://www.springframework.org/schema/beans 
@@ -372,7 +372,10 @@ http://www.springframework.org/schema/beans/spring-beans.xsd
  http://www.springframework.org/schema/context 
 http://www.springframework.org/schema/context/spring-context.xsd
 ">
-<context:component-scanbase-package="com.app"/>
+
+<context:annotation-config/>
+<context:component-scan base-package="com.training"/>
+
 </beans>
 
 
@@ -636,7 +639,7 @@ AppConfig.java
 
 @Configuration
 @PropertySource({"MyProp.properties"})
-publicclass AppConfig {
+public class AppConfig {
 
 @Autowired
 private Environment env;
@@ -795,8 +798,11 @@ Read one bean using getBean() method in test class multiple time.
 If same hashcode is returned every time means scope is singleton , else if every 
 time new hashcode scope is prototype.
 
+Demo Project: demoOnSpringBeanScopesXml
+---------------------------------
+
 publicclass Employee {
-private intempId;
+private int empId;
 public Employee() {
 super();
 }
@@ -841,8 +847,6 @@ Employee.class);
 System.out.println(e3.hashCode());
 }
 }
-
-
 
 Note:
 -----
@@ -1002,3 +1006,843 @@ Spring container provides logic to abstract method I below format.
 2. If new object is created then add new child to List.
 3. Parent should be linked to last index child object of above list using 
 setChild(list.get(size-1)) logic internally.
+
+
+
+Wiring:
+--------
+It is a process of linking parent object with child object. 
+By writing<ref> tag  code written by programmer.
+
+Autowiring:
+Parent-child object are linked by Spring Container only. 
+Programmer not required to write <property with <ref (SI code) or <constructor-arg with <ref (CI code).
+
+Autowiring is applicable for Reference Type Dependency Only.
+Autowiring can be done in two ways.
+1. XML 2. Annotation
+
+byType autowiring example:
+------------------------
+This one compares <bean class=”” in XML with DataType of HAS-A variable in parent class.
+
+If matched then spring container will inject child into parent object.
+
+Syntax: at parent <bean> tag level
+
+<bean class=”” name=”” autowired="byType">
+
+byType uses setter Injection.
+
+byType means DataType
+
+byType case container generates code like: <property… with <ref..
+
+
+byName Autowiring:
+------------------
+
+At parent <bean> tag level provide autowire=”byname” then Spring Container 
+compares HAS-A “variable name” with <bean name=” “ in XML.
+
+If both are matched then spring container injects child with parent.
+
+Constructor Autowiring:
+-----------------------
+If we provide autowire=”constructor” at parent bean tag level then Spring 
+container links child and parent objects using const. Dependency Injection 
+(CDI) (It will call param. const.)
+
+
+
+
+@Autowired :
+------------
+This is used to do autowiring using Annotation concept, Which works faster 
+(and better) compared with XML config.
+
+1. It must be activated before using it with <context:annotation-config/>
+or <context:component-scan  base-package=”com.app”/>
+
+2. It internally follows required annotation by default. So, Injecting child is 
+not optional.
+
+3. To make injection optional use @Autowired(required=false). By default 
+it is true.
+
+4. If zero matchings found then Spring container throws
+NoSuchBeanDefenationException. (=0 and @Qualifier with zero 
+matchings).
+
+5. If multiple matching found but even name is not matching then 
+NoUniqueBeanException (for >1 matchings &<bean name not matched)
+
+
+
+SPRING JDBC:
+------------
+spring-core
+spring-context
+spring-jdbc
+mysql-connector-java.jar..
+
+
+This is used to perform database operations in less lines by removing common 
+lines of code (redundant code/boilerplate) .
+
+That is, if we consider two (2) JDBC programs common lines are connection, 
+Driver class loading, statement etc… known as duplicate code.
+
+These lines can be written one time and used multiple time done 
+using Template Design Pattern.
+
+Jdbc       + Template          = JdbcTemplate
+Technology     Design Pattern    (class)
+
+JdbcTemplate (c) created by Spring Framework reduces common lines of 
+code, by writing then only one time and use multiple times.
+
+Here Spring Container performs common operation steps, Programmer 
+should write SQL, set data, get result and print code
+
+JdbcTemplate (c) :- (org.springframework.jdbc.core)
+-----------------
+
+This class is given by Spring Framework, to perform database operations 
+(CURD).
+
+For this we need to provide DataSource (I) (javax.sql) object. 
+Here DataSource is an interface. So,we have to pass it’s any one 
+implementation class object.
+
+Ex: DriverManagerDataSource, BasicDataSource etc…
+
+JdbcTemplate provide method “update” which is used to perform insert, 
+update and delete operations.
+
+Spring JDBC Using XML Configuration:
+------------------------------------
+JdbcTemplate class having update() method which perform “insert, 
+update and delete” operation by taking two inputs.
+String -- SQL Query
+Object… -- inputs to SQL Query
+
+
+appConfig.xml:
+--------------
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:util="http://www.springframework.org/schema/util"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:p="http://www.springframework.org/schema/p"
+xsi:schemaLocation="http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context 
+http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/util
+http://www.springframework.org/schema/util/spring-util.xsd ">
+
+
+<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+name="dmdsObj"
+p:driverClassName="com.mysql.cj.jdbc.Driver"
+p:url="jdbc:mysql://localhost:3306/training"
+p:username="root"
+p:password="root"
+/>
+<bean class="org.springframework.jdbc.core.JdbcTemplate"
+name="jtObj"
+p:dataSource-ref="dmdsObj"
+/>
+</beans>
+
+
+Spring Bean Code:
+------------------
+public class Student {
+private int stdId;
+private String stdName;
+private String course;
+private double stdFee;
+
+public Student() {
+super();
+}
+publicint getStdId() {
+return stdId;
+}
+publicvoid setStdId(intstdId) {
+this.stdId = stdId;
+}
+public String getStdName() {
+return stdName;
+}
+publicvoid setStdName(String stdName) {
+this.stdName = stdName;
+}
+public String getCourse() {
+return course;
+}
+publicvoid setCourse(String course) {
+this.course = course;
+}
+publicdouble getStdFee() {
+return stdFee;
+}
+publicvoid setStdFee(doublestdFee) {
+this.stdFee = stdFee;
+}
+@Override
+public String toString() {
+return"Student [stdId=" + stdId + ", stdName=" + 
+stdName + ", course=" + course + ", stdFee=" + stdFee + 
+"]";
+}
+}
+
+Create the Student Table:
+-------------------------
+create table student1(stdid int,stdname varchar(10),course varchar(10),stdFee float);
+
+
+TestCode:
+----------
+
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+public class InsertTest {
+public  static void main(String[] args) {
+ApplicationContext c = new
+ClassPathXmlApplicationContext("config.xml");
+
+JdbcTemplate jt = (JdbcTemplate) c.getBean("jtObj");
+String sql = "insert into student1 values(?,?,?,?)";
+int count = jt.update(sql, 1005,"Ashutosh","Spring",49999);
+
+System.out.println("Student saved successfully :: "+count);
+}
+}
+
+
+Spring JDBC Using Java Configuration and Maven Tool:
+-----------------------------------------------------
+open pom.xml:
+-------------
+add the below dependencies
+--------------------------
+<dependency>
+<groupId>org.springframework</groupId>
+<artifactId>spring-jdbc</artifactId>
+<version>5.0.6.RELEASE</version>
+</dependency>
+<dependency>
+<groupId>org.springframework</groupId>
+<artifactId>spring-context</artifactId>
+<version>5.0.6.RELEASE</version>
+</dependency>
+<dependency>
+<groupId>mysql</groupId>
+<artifactId>mysql-connector-java</artifactId>
+<version>5.1.6</version>
+</dependency
+
+
+
+jdbc.properties:
+----------------
+dc=com.mysql.jdbc.Driver
+url=jdbc:mysql://localhost:3306/training
+un=root
+pwd=root
+
+
+javaConfigurationCLass:
+-----------------------
+
+@PropertySource("jdbc.properties")
+@Configuration
+public class AppConfig {
+
+@Autowired
+private Environment env;
+
+@Bean
+public DriverManagerDataSource dsObj() {
+DriverManagerDataSource ds = new
+DriverManagerDataSource();
+ds.setDriverClassName(env.getProperty("dc"));
+ds.setUrl(env.getProperty("url"));
+ds.setUsername(env.getProperty("un"));
+ds.setPassword(env.getProperty("pwd"));
+returnds;
+}
+
+@Bean
+public JdbcTemplate jtObj() {
+JdbcTemplate jt = new JdbcTemplate();
+jt.setDataSource(dsObj());
+returnjt;
+}
+}
+
+
+Spring Bean code:
+------------------
+package com.app.bean;
+public class Employee {
+private int empId;
+private String empName;
+private String desig;
+private double empSal;
+public Employee() {
+super();
+}
+publicint getEmpId() {
+return empId;
+}
+public void setEmpId(intempId) {
+this.empId = empId;
+}
+public String getEmpName() {
+returnempName;
+}
+publicvoid setEmpName(String empName) {
+this.empName = empName;
+}
+public String getDesig() {
+returndesig;
+}
+publicvoid setDesig(String desig) {
+this.desig = desig;
+}
+publicdouble getEmpSal() {
+returnempSal;
+}
+publicvoid setEmpSal(doubleempSal) {
+this.empSal = empSal;
+}
+@Override
+public String toString() {
+return"Employee [empId=" + empId + ", empName=" + 
+empName + ", desig=" + desig + ", empSal=" + empSal + "]";
+}
+}
+
+Test class code:
+-----------------
+
+publicclass InsertTest {
+public staticvoid main(String[] args) {
+ApplicationContext ac = new
+AnnotationConfigApplicationContext(AppConfig.class);
+JdbcTemplate jt = (JdbcTemplate) ac.getBean("jtObj");
+String sql = "insert into emptab2 values(?,?,?,?)";
+int count = jt.update(sql, 11,"Ashu","JS",999);
+System.out.println("Data Inserted :: "+count);
+}
+}
+
+RowMapperin Spring JDBC:
+------------------------
+To fetch data from database using select query, JdbcTemplate has 
+provided special method like:
+a) queryForObject(Single row)
+b) query(Multiple row)
+
+both methods perform select operations
+But these methods will fetch data from database table in 
+ResultSet format (having rows) after excuting SQL query.
+
+This ResultSet data cab be converted to Objects format using 
+RowMapper(I).
+
+RowMapper will not get data form database. If only converts ResultSet 
+rows to model class Objects.
+
+It is having MapRow() method which contains conversion logic (row -> 
+object).
+
+RowMapper Code:
+---------------
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import org.springframework.jdbc.core.RowMapper;
+publicclass StudentRowMapper implements RowMapper<Student> 
+{
+public Student mapRow(ResultSet rs, intcount) throws
+SQLException {
+Student s = new Student();
+s.setStdId(rs.getInt(1));
+s.setStdName(rs.getString(2));
+s.setCourse(rs.getString(3))
+s.setStdFee(rs.getDouble(4));
+returns;
+}
+}
+
+Test Class:
+-----------
+public class Test {
+publicstaticvoid main(String[] args) {
+ApplicationContext c = new
+ClassPathXmlApplicationContext("config.xml");
+JdbcTemplate jt = (JdbcTemplate) 
+c.getBean("jtObj");
+String sql = "select * from student1 where sid=?";
+StudentRowMapper srm = new StudentRowMapper();
+Student s = jt.queryForObject(sql, srm, 1);
+System.out.println(s);
+}
+}
+
+
+# query() method:-
+
+This method is used to get multiple rows from database table using SQL 
+and RowMapper(I).
+API: query(String sql,RowMapper<T> rm) : List<T>
+Final data is returned in List format.
+# queryForObject() method:-
+
+This method is used to get one row data from database table using SQl 
+and RowMapper(I).
+API:
+queryForObject(String sql, RowMapper<T> rm, Object… inputs) : T
+
+
+##RowMapper<T> (I) is a functional interface, so we can write above code 
+without writing StudentRowMapper class, directly using lambda expression.
+
+EX#1. (Test class code)
+String sql = “select * from student where sid=?”;
+RowMapper<Student> rm = (rs, count)-> {
+Student s = new Student();
+s.setStdId(rs.getInt(“sid”))
+s.setStdName(rs.getString(“sname”))
+s.setStdFee(rs.getDouble(“sfee”))
+return s;
+};
+Student s = jt.queryForObject(sql, rm, 45);
+Sysout(s);
+
+EX#2: Generate 3 param constructor in Student Then lambda expression is:
+RowMapper<Student> rm = (rs, count) ->
+new Student (rs.getInt(1),rs.getString(2),rs.getDouble(3));
+
+
+SPRING ORM:
+-----------
+Mapping can be done using
+a. XML coding (old style)
+b. Annotation coding (new style) 
+(Also called as JPA = java persistency API annotation)
+
+If we follow mapping , then ORM converts objects to row and row to 
+object without SQL written to programmer.
+
+Above java class is also called as model class/Entity class/POJO class etc.
+Table must have one primary key (behaves as unique + not null
+
+ORM USING SPRING 
+----------------
+Here setup code is provided for DataSource ,SessionFactory and 
+TransactionManager object and Module-Wise code is provided for Model class
+
+
+Model-class
+-----------
+IDao ------DaoImpl (POJI – POJO) : in Data Access Layer.
+IService ------ ServiceImpl (POJI – POJO) : in Service Layer.
+
+POJI – POJO design pattern is used to link layer in loosely-coupled 
+manner.
+
+Service Layer Contains : 
+Application logic and Transaction (tx) management code.
+
+Data Access Layer Contains:
+DataBase Operation code
+
+
+SPRING ORM Example:
+-------------------
+Entity class:
+-------------
+importjavax.persistence.Column;
+importjavax.persistence.Entity;
+importjavax.persistence.Id;
+importjavax.persistence.Table;
+
+@Entity
+@Table(name = "user_tab1")
+public class User {
+@Id
+@Column(name = "u_id")
+privateintuserId;
+@Column(name = "uname")
+private String userName;
+@Column(name = "ucode")
+private String userCode;
+public User() {
+super();
+}
+public User(intuserId, String userName, String 
+userCode) {
+super();
+this.userId = userId;
+this.userName = userName;
+this.userCode = userCode;
+}
+public int getUserId() {
+returnuserId;
+}
+public void setUserId(int userId) {
+this.userId = userId;
+}
+public String getUserName() {
+returnuserName;
+}
+public void setUserName(String userName) {
+this.userName = userName;
+}
+public String getUserCode() {
+return userCode;
+}
+public void setUserCode(String userCode) {
+this.userCode = userCode;
+}
+@Override
+public String toString() {
+return"User [userId=" + userId + ", userName=" + 
+userName + ", userCode=" + userCode + "]";
+}
+}
+
+DAO PACKAGE:
+------------
+Interface:
+-----------
+IUserDao.java
+
+public interface IUserDao {
+publicabstractint save(User user);
+publicabstractvoid update(User user);
+publicabstractvoid delete(intuserId);
+publicabstract User getUserById(intuserId);
+publicabstract List<User>getAllUsers();
+}
+
+UserDaoImpl.java
+-----------------
+importjava.util.List;
+importorg.springframework.beans.factory.annotation.Autowir
+ed;
+import
+org.springframework.orm.hibernate5.HibernateTemplate;
+importorg.springframework.stereotype.Repository;
+importcom.app.dao.IUserDao;
+importcom.app.model.User;
+@Repository
+public class UserDaoImpl implements IUserDao{
+@Autowired
+privateHibernateTemplate ht;
+@Override
+publicint save(User user) {
+return (Integer)ht.save(user);
+}
+@Override
+publicvoid update(User user) {
+ht.update(user);
+}
+@Override
+publicvoid delete(intuserId) {
+User user = newUser();
+user.setUserId(userId);
+ht.delete(user);
+}
+@Override
+public User getUserById(intuserId) {
+User user = ht.get(User.class, userId);
+returnuser;
+}
+@Override
+public List<User>getAllUsers() {
+List<User>user = ht.loadAll(User.class);
+returnuser;
+}
+}
+
+ServiceLayer:
+-------------
+IUserService.java
+-------------------
+importjava.util.List;
+
+public interfaceI UserService {
+public abstractint save(User user);
+public abstractvoid update(User user);
+public abstractvoid delete(intuserId);
+public abstract User getUserById(intuserId);
+public abstract List<User>getAllUsers();
+}
+
+UserServiceImpl.java
+---------------------
+@Service
+public class ServiceUserImpl implements IUserService{
+@Autowired
+privateIUserDaodao;
+@Transactional
+publicint save(User user) {
+returndao.save(user);
+}
+publicvoid update(User user) {
+dao.update(user);
+}
+@Transactional
+publicvoid delete(intuserId) {
+dao.delete(userId);
+}
+@Transactional(readOnly = true)
+public User getUserById(intuserId) {
+returndao.getUserById(userId);
+}
+@Transactional(readOnly = true)
+public List<User>getAllUsers() {
+returndao.getAllUsers();
+}
+}
+
+Test.java
+----------
+public class Test {
+
+publicstaticvoid main(String[] args) {
+ApplicationContextac = 
+newClassPathXmlApplicationContext("config.xml");
+IUserServiceu = 
+(IUserService)ac.getBean("serviceUserImpl");
+
+/* User user = new User();
+user.setUserId(3);
+user.setUserName("RAVI SAM Sharma");
+user.setUserCode("Uss5");
+u.save(user);
+System.out.println("Saved data successful");
+*/
+/*
+user.setUserId(3);
+user.setUserName("VickyRajkumar");
+user.setUserCode("psdf");
+u.update(user);
+System.out.println("update succesfull");
+*/
+/*
+//Delete operation
+User user = new User();
+user.setUserId(3);
+u.delete(3);
+System.out.println(3+" user deleted");
+*/
+//retrive data in list<User>
+List<User>list = u.getAllUsers();
+for(User user:list)
+System.out.println(user);
+//retrive only one user data` /
+/*User user = u.getUserById(2);
+System.out.println(user);*/
+//HibernateTransactionManagerhh;
+// hh.setSessionFactory(sessionFactory);
+}
+}
+
+Config.xml
+-----------
+
+<?xmlversion="1.0"encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:p="http://www.springframework.org/schema/p"
+xmlns:tx="http://www.springframework.org/schema/tx"
+xmlns:aop="http://www.springframework.org/schema/aop"
+xmlns:context="http://www.springframework.org/schema/
+context"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="
+ http://www.springframework.org/schema/beans 
+ 
+http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://www.springframework.org/schema/context 
+http://www.springframework.org/schema/context/spring-context.xsd
+ http://www.springframework.org/schema/tx 
+ http://www.springframework.org/schema/tx/spring-tx.xsd
+ http://www.springframework.org/schema/aop 
+ http://www.springframework.org/schema/aop/spring-aop.xsd
+ ">
+
+<!-- Activation of streotype annotation -->
+<context:component-scanbase-package="com.app"/>
+<!-- Activation transection manager -->
+<tx:annotation-driven/>
+<!-- Link properties file -->
+<context:propertyplaceholderlocation="mydata.properties"/>
+<!-- 1.DataSource object -->
+<beanclass="org.springframework.jdbc.datasource.DriverMana
+gerDataSource"name="dsObj"
+p:driverClassName="${dcn}"
+p:url="${url}"
+p:username="${un}"
+p:password="${pwd}"
+/>
+<!-- 2.LocalSessionFactoryBean object -->
+<beanclass="org.springframework.orm.hibernate5.LocalSessio
+nFactoryBean"name="lsbObj">
+<propertyname="dataSource"ref="dsObj"/>
+<propertyname="hibernateProperties">
+<props>
+<propkey="hibernate.dialect">${dialects}</prop>
+<propkey="hibernate.show_sql">${showsql}</prop>
+<propkey="hibernate.format_sql">${formatsql}</prop>
+<propkey="hibernate.hbm2ddl.auto">${hbmauto}</prop>
+</props>
+</property>
+<propertyname="annotatedClasses">
+<list>
+<value>com.app.model.User</value>
+</list>
+</property>
+</bean>
+<beanclass="org.springframework.orm.hibernate5.HibernateTe
+mplate"name="htObj">
+<propertyname="sessionFactory"ref="lsbObj"/>
+</bean>
+<beanclass="org.springframework.orm.hibernate5.HibernateTr
+ansactionManager"name="transactionManager">
+<propertyname="sessionFactory"ref="lsbObj"/>
+</bean>
+</beans>
+
+MyData.properties
+-----------------
+#This is properties data
+dcn=oracle.jdbc.OracleDriver
+url=jdbc:oracle:thin:@localhost:1521:xe
+un=vicky
+pwd=vicky
+dialects=org.hibernate.dialect.OracleDialect
+showsql=true
+formatsql=true
+hbmauto=update
+
+JavaConfig:
+===========
+JAVA CONFIG CODE
+@Bean
+public LocalSessionFactoryBeansfObj(){
+LocalSessionFactoryBeansf = new LocalSessionFactoryBean();
+sf.setDataSource(dsObj());
+sf.setHibernateProperties(props());
+sf.setAnnotatedClasses(Employee.class);
+returnsf;
+}
+private Properties props(){
+Properties p = new Properties();
+p.put(“hibernate.dialect” , “___”);
+p.put(“hibernate.show_sql” , “___”);
+p.put(“hibernate.format_sql” , “___”);
+p.put(“hibernate.hbm2ddl.auto” , “___”);
+return p;
+}
+
+-----------------------------------------------
+TransactionManagement in spring ORM:
+------------------------------------
+Before performing any DB operation we should start (begin) Transaction (tx)
+
+If operation is successfully executed then commit (Save changes in DB) 
+else rollback (Cancle changes in database).
+
+To do this tx management spring has provided API (for ORM) as:
+a. TX Management Classes.
+HibernateTransactionManager 
+(org.springframework.orm.hibernate5)
+It does code execution like:
+try{
+begintx ….
+//operation
+Commit(if all done)
+}catch (Exception e){
+rollback…
+}
+b. Enable Tx: @EnableTransactionManagement
+(org.springframework.transaction.annotation)
+It will activate and de-activate txmanagement in spring application. It behaves 
+like switch.
+
+c. Service method annotation.
+in service layer method apply annotation like @Transactional for non-select 
+operation and also for select operation.
+@Transactional (readOnly = true)
+
+Hibernate + Template 
+---------------------
+Hibernate Template framework (ORM) Design pattern class (Spring)
+
+By using this “HibernateTemplate” (C) we can perform operation in one 
+line remaining common line (7 setps) are done by Spring framework.
+
+HibernateTemplate[c] (org.springframework.orm.hibernate5)
+This class is used to perfrom operation in one line code , given example 
+operations are save() , update() , delete() , get() and loadAll().
+
+1. save(obj):
+This method is used to convert model (entity / pojo) class object to 
+database table row.
+EX: consider Employee(empId: int , empName :String , empSal : 
+double)
+As model class mapped with emptab (eid ,ename , esal).
+
+2. update(obj):
+This method updates all columns data based on primary key value in 
+database table.
+Input is model class object and update row data column wise.
+
+3. delete(obj):
+This method takes one model class object having only primary key value 
+(other values not required) based on primary key , row will be deleted 
+from DB table.
+
+FETCH RECORD
+------------
+4. get(T.class , ID) : T Object
+This method is used to fetch one row using select query to 
+application. This row will be converted to model class object.
+Inputs T = Type = Model class name 
+ID = primary key data.
+
+Syntax:
+------
+T obj = ht.get(T.class , ID);
+
+if given id based row not exist in DB table then get() method returns null 
+value.
+
+5. loadAll(T.class): List<T>
+This method will fetch all rows in DB table converts to list of objects 
+(model class objects)
+
+list size is equals to number of rows in table.
+If table has no rows then empty list will be returned.
+
+Here T = model class name
+Syntax:
+List<T>objs = ht.loadAll(T.class);
+Example
+List<Employee>emps = ht.loadAll(Employee.class);
+
+
+
