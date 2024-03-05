@@ -1483,7 +1483,7 @@ importjavax.persistence.Table;
 public class User {
 @Id
 @Column(name = "u_id")
-privateintuserId;
+private int userId;
 @Column(name = "uname")
 private String userName;
 @Column(name = "ucode")
@@ -1499,13 +1499,13 @@ this.userName = userName;
 this.userCode = userCode;
 }
 public int getUserId() {
-returnuserId;
+return userId;
 }
 public void setUserId(int userId) {
 this.userId = userId;
 }
 public String getUserName() {
-returnuserName;
+return userName;
 }
 public void setUserName(String userName) {
 this.userName = userName;
@@ -1581,17 +1581,17 @@ ServiceLayer:
 -------------
 IUserService.java
 -------------------
-importjava.util.List;
+import java.util.List;
 
 public interfaceI UserService {
-public abstractint save(User user);
-public abstractvoid update(User user);
-public abstractvoid delete(intuserId);
-public abstract User getUserById(intuserId);
-public abstract List<User>getAllUsers();
+public abstract int save(User user);
+public abstract void update(User user);
+public abstract void delete(int userId);
+public abstract User getUserById(int userId);
+public abstract List<User> getAllUsers();
 }
 
-UserServiceImpl.java
+ServiceUserImpl.java
 ---------------------
 @Service
 public class ServiceUserImpl implements IUserService{
@@ -1653,6 +1653,7 @@ System.out.println(3+" user deleted");
 List<User>list = u.getAllUsers();
 for(User user:list)
 System.out.println(user);
+
 //retrive only one user data` /
 /*User user = u.getUserById(2);
 System.out.println(user);*/
@@ -1663,14 +1664,12 @@ System.out.println(user);*/
 
 Config.xml
 -----------
-
-<?xmlversion="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 xmlns:p="http://www.springframework.org/schema/p"
 xmlns:tx="http://www.springframework.org/schema/tx"
 xmlns:aop="http://www.springframework.org/schema/aop"
-xmlns:context="http://www.springframework.org/schema/
-context"
+xmlns:context="http://www.springframework.org/schema/context"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="
  http://www.springframework.org/schema/beans 
@@ -1681,84 +1680,128 @@ http://www.springframework.org/schema/context/spring-context.xsd
  http://www.springframework.org/schema/tx 
  http://www.springframework.org/schema/tx/spring-tx.xsd
  http://www.springframework.org/schema/aop 
- http://www.springframework.org/schema/aop/spring-aop.xsd
- ">
+ http://www.springframework.org/schema/aop/spring-aop.xsd">
+ 
+ <!-- Activation of streotype annotation -->
+<context:component-scan base-package="com.training"/>
 
-<!-- Activation of streotype annotation -->
-<context:component-scanbase-package="com.app"/>
 <!-- Activation transection manager -->
 <tx:annotation-driven/>
+
 <!-- Link properties file -->
-<context:propertyplaceholderlocation="mydata.properties"/>
+<context:property-placeholder location="MyData.properties"/>
+
 <!-- 1.DataSource object -->
-<beanclass="org.springframework.jdbc.datasource.DriverMana
-gerDataSource"name="dsObj"
+<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" name="dsObj"
 p:driverClassName="${dcn}"
 p:url="${url}"
 p:username="${un}"
 p:password="${pwd}"
 />
+
 <!-- 2.LocalSessionFactoryBean object -->
-<beanclass="org.springframework.orm.hibernate5.LocalSessio
-nFactoryBean"name="lsbObj">
-<propertyname="dataSource"ref="dsObj"/>
-<propertyname="hibernateProperties">
+
+<bean class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" name="lsbObj">
+<property name="dataSource" ref="dsObj"/>
+<property name="hibernateProperties">
 <props>
-<propkey="hibernate.dialect">${dialects}</prop>
-<propkey="hibernate.show_sql">${showsql}</prop>
-<propkey="hibernate.format_sql">${formatsql}</prop>
-<propkey="hibernate.hbm2ddl.auto">${hbmauto}</prop>
+<prop key="hibernate.dialect">${dialects}</prop>
+<prop key="hibernate.show_sql">${showsql}</prop>
+<prop key="hibernate.format_sql">${formatsql}</prop>
+<prop key="hibernate.hbm2ddl.auto">${hbmauto}</prop>
 </props>
 </property>
-<propertyname="annotatedClasses">
+
+<property name="annotatedClasses">
 <list>
-<value>com.app.model.User</value>
+<value>com.training.entity.User</value>
 </list>
 </property>
 </bean>
-<beanclass="org.springframework.orm.hibernate5.HibernateTe
-mplate"name="htObj">
-<propertyname="sessionFactory"ref="lsbObj"/>
+
+<bean class="org.springframework.orm.hibernate5.HibernateTemplate" name="htObj">
+<property name="sessionFactory" ref="lsbObj"/>
+
 </bean>
-<beanclass="org.springframework.orm.hibernate5.HibernateTr
-ansactionManager"name="transactionManager">
-<propertyname="sessionFactory"ref="lsbObj"/>
+<bean class="org.springframework.orm.hibernate5.HibernateTransactionManager" name="transactionManager">
+<property name="sessionFactory" ref="lsbObj"/>
 </bean>
+
 </beans>
 
 MyData.properties
 -----------------
 #This is properties data
-dcn=oracle.jdbc.OracleDriver
-url=jdbc:oracle:thin:@localhost:1521:xe
-un=vicky
-pwd=vicky
-dialects=org.hibernate.dialect.OracleDialect
+dcn=com.mysql.cj.jdbc.Driver
+url=jdbc:mysql://localhost:3306/training
+un=root
+pwd=root
+dialects=org.hibernate.dialect.MySQL8Dialect
 showsql=true
 formatsql=true
 hbmauto=update
 
-JavaConfig:
-===========
-JAVA CONFIG CODE
-@Bean
-public LocalSessionFactoryBeansfObj(){
-LocalSessionFactoryBeansf = new LocalSessionFactoryBean();
-sf.setDataSource(dsObj());
-sf.setHibernateProperties(props());
-sf.setAnnotatedClasses(Employee.class);
-returnsf;
-}
-private Properties props(){
-Properties p = new Properties();
-p.put(“hibernate.dialect” , “___”);
-p.put(“hibernate.show_sql” , “___”);
-p.put(“hibernate.format_sql” , “___”);
-p.put(“hibernate.hbm2ddl.auto” , “___”);
-return p;
-}
 
------------------------------------------------
+SPRING ORM JAVA CONFIG:
+-----------------------
+REPLACE XML CONFIGURATION  WITH JAVACONFIG
+-------------------------------------------
+@Configuration
+@ComponentScan(basePackages="com.training")
+@PropertySource("MyData.properties")
+@EnableTransactionManagement
+public class AppConfig {
+
+		 @Autowired
+		    private Environment environment;
+
+		    @Bean
+		    public LocalSessionFactoryBean sessionFactory() {
+		        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+		        sessionFactory.setDataSource(dataSource());
+		        sessionFactory.setPackagesToScan(new String[] {
+		            "com.training.entity"
+		        });
+		        sessionFactory.setHibernateProperties(hibernateProperties());
+		        return sessionFactory;
+		    }
+
+		    @Bean
+		    public DataSource dataSource() {
+		        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		        dataSource.setDriverClassName(environment.getRequiredProperty("dcn"));
+		        dataSource.setUrl(environment.getRequiredProperty("url"));
+		        dataSource.setUsername(environment.getRequiredProperty("un"));
+		        dataSource.setPassword(environment.getRequiredProperty("pwd"));
+		        return dataSource;
+		    }
+
+		    private Properties hibernateProperties() {
+		        Properties properties = new Properties();
+		        properties.put("hibernate.dialect", environment.getRequiredProperty("dialects"));
+		        properties.put("hibernate.show_sql", environment.getRequiredProperty("showsql"));
+		        properties.put("hibernate.format_sql", environment.getRequiredProperty("formatsql"));
+		        properties.put("hibernate.hbm2ddl.auto", environment.getRequiredProperty("hbmauto"));
+		        return properties;
+		    }
+
+		    @Bean
+		    public HibernateTransactionManager getTransactionManager() {
+		        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+		        transactionManager.setSessionFactory(sessionFactory().getObject());
+		        return transactionManager;
+		    }
+		    
+		    @Bean
+		    public HibernateTemplate getHibernateTemplate() {
+		    	HibernateTemplate  hTemplate = new HibernateTemplate ();
+		    	hTemplate.setSessionFactory(sessionFactory().getObject());
+		        return hTemplate;
+		    }
+		    
+		}
+
+
 TransactionManagement in spring ORM:
 ------------------------------------
 Before performing any DB operation we should start (begin) Transaction (tx)
