@@ -1,0 +1,304 @@
+SPRING BOOT: 
+----------
+Spring Boot is an open source Java-based framework developed by Pivotal Team.
+--> Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run".
+
+--> Spring Boot provides production-ready features such as metrics, health checks and externalized configuration.
+
+--> It simplifies the bootstrapping and development of Spring Applications.
+
+--> Spring Boot was designed on the top of existed Spring Framework to simplify and speedup the spring based applications.
+
+--> Spring Boot can be used to develop Spring based applications either by using JAVA or by using Groovy.
+
+--> Spring Boot Simplifies application development by having all configurations as defaults.
+
+--> Spring Boot reduces application development time.
+
+--> Spring Boot will improve Productivity.
+
+--> Spring Boot will provide very simple approach to integrate Spring Boot Application with 
+its Spring Ecosystem like Spring JDBC, Spring ORM, Spring Data, Spring Security etc.
+
+--> Spring Boot follows "Opinionated Defaults Configuration" approach to reduce 
+Developer effort, that is,Spring Boot avoids writing lots of boilerplate Code,Annotations 
+and XML Configuration,...
+
+--> Spring Boot provides Embedded HTTP servers like Tomcat, Jetty etc. to develop and test 
+our web applications very easily.
+
+--> Spring Boot provides CLI (Command Line Interface) tool to develop and test Spring Boot 
+Applications from command prompt very easily and quickly.
+
+--> Spring Boot provides lots of plugins to develop and test Spring Boot Applications very 
+easily using Build Tools like Maven and Gradle
+
+--> It provides lots of plugins to work with embedded and in-memory Databases very easily.
+
+--> Where In-Memory databases are the databases, they will be created when application 
+startup and it will be destroyed when application terminated.
+ EX: H2 Database.
+
+--> In simple words, Spring Boot is the Existed Spring Framework with Embedded Web 
+Servers like Tomcat and Jetty with No XMl configurations and less Annotations.
+
+
+Steps to Prepare Spring Boot Applications:
+------------------------------------------------------------
+Spring Boot Applications are prepared and executed in the following four ways.
+1. Using Simple MAVEN project in Eclipse IDE.
+2. STS IDE
+3. Spring Boot Initializer(start.spring.io)
+4. Spring Boot CLI[Command Line Interface]
+
+
+
+SPRING BOOT CORE
+-----------------
+1. Spring Boot Runners:
+
+=>A Runner is an auto-executable component which is called by container on 
+application startup only once.
+=>In simple this concept is used to execute any logic (code) one time when application is started.
+
+Types of Runners(2):
+
+1.1 CommandLineRunner :-- This is legacy runner (old one) which is provided in Spring boot 1.0 version.
+=>It has only one abstract method “run(String… args) : void”.
+=>It is a Functional Interface (having only one abstract method).
+=>Add one stereotype Annotation over Implementation class level (Ex:-
+@Component). So that container can detect the class and create object to it.
+
+How CommandLineRunner works?
+----------------------------
+CommandLine arguments which are passed to application which will be given to 
+Spring Boot starter main(..) method. 
+Those are stored as “string Array” (String[]).
+
+SpringApplication.run(…) reads this input and internally calls run(..) methods of 
+RunnerImpl classes and pass same data.
+
+1.2 ApplicationRunner(I) :
+---------------------------
+It is new type runner added in Spring boot 1.3 which makes easy to access arguments.
+=>This will separate Option Arguments (as Map<String, List<String>>) and Non-Option Arguments (<List<String>)
+
+Spring Boot Input Data (Using application.properties):
+------------------------------------------------------
+=>application.properties or application.yml is a primary source input to spring boot (Spring Container).
+
+=>Spring Boot F/W writes Configuration code (XML/Java Config) for programmer.
+
+=>Here we are not required to write (@Bean or <bean..>) configuration for common 
+application setup like JDBC Connection, Hibernate Properties, DispatcherServlet Config, Security Beans etc..
+
+=>But Programmer has to provide input to the above beans (Objects) using Properties or YAML File (any one).
+
+
+application.properties:
+-----------------------
+
+1.It holds in key=value format
+
+2.Keys are two types 
+
+ a.Spring Boot defined (Predefined) Reference Link:   https://docs.spring.io/spring-
+ boot/docs/current/reference/html/common-application-properties.html)
+
+ b.Programmer defined
+
+Example:
+--------
+1. Create maven project and provide pom.xml and starter class
+2. application.properties (src/main/resources)
+=>Right click on src/main/resource folder=>new =>other=>search and Select 
+File=>enter name =application.properties => finish
+
+application.properties:
+-----------------------
+my.info.product.id=999A
+my.info.product.code=xyz
+my.info.product.model-version=44.44
+my.info.product.release_dtl_enable=false
+my.info.product.start-key=N
+
+NOTE:
+-----
+a.Allowed special symbol are dot(.), dash(-) and underscore (_).
+
+b.Key=value both are String type, Spring supports both are String type, Spring 
+supports type conversation (ex String->int) automatically.
+
+c.To read one key-value in code use Legacy syntax : @Value("${key}")
+
+
+Possible Locations for Properties or (YAML) file:
+-----------------------------------------------
+Spring Boot supports 4 default and priority order locations, which are loaded by 
+container for key=val data.
+
+1> Under Project:-- Under Config folder:--
+Project/config/application.properties (file:./config/application.properties) 
+
+2> Under Project (Only):--
+Project/application.properties (file: ./application.properties)
+
+3> Under Project (Under resources/config):--
+Project/src/main/resources/config/application.properties 
+(classpath:/config/application.properties)
+
+4> Under Project folder:--
+Project/src/main/resource/application.properties 
+(classpath:/application.properties)
+
+
+
+ForAutoDetectionKeys:
+---------------------
+=>Add one extra dependency for auto detection of keys in properties/yml file.
+<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-configuration-processor</artifactId>
+<optional>true</optional>
+</dependency>
+
+and use @ConfigurationProperties in at class level
+
+4. YAML (YAMlian Language):
+---------------------------
+=>It is representation style of key=val without duplicate levels in keys if they are 
+lengthy and having common levels.
+=>File extension is “.yml”.
+=>It will hold data in below format 
+ key : <space> value
+=>Default name used in Spring boot is application.yml.
+=>At least one space must be used but same should be maintaining under same level.
+=>Spring Boot System converts .yml to .properties using SnakeYaml API.
+=>Snake YAML will
+ a>Check for space and prefix levels
+ b.>Trace keys for data find.
+ c>Convert .yml to .properties internally system is while loading
+
+-=-=- “application.properties” -=-=-
+Ex#1:-
+my.data.id-num=10
+my.data.core_val=AB
+my.data.enabled.costBit=3.6
+my.data.enabled.valid=true
+
+Ex#2:--
+my.code.id=56
+my.code.mdn.type=big
+my.code.str.service=ALL
+my.code.str.service.info=true
+my.code.mdn.obj=CRL
+my.code.cost=3.67
+my.code.mdn.sale=YES
+
+=>Its equal YAML file looks as 
+-=-=- application.yml-=-=-
+my:
+ code:
+  id: 56
+  cost: 3.67
+ mdn: 
+  type: big
+  obj: CRL
+  sale: YES 
+ str:
+  service: ALL
+   info: true
+
+
+=>Key=value format List<DataType>/Set<DataType>/Array(<DataType>[]) Style
+=>In properties file we can use from zero.
+=>In yml file use just dash (-) with <space> value under same level.
+
+Ex:-- application.proeprties---
+
+my.code.version[0]=V1
+my.code.version[1]=V2
+my.code.version[2]=V3
+
+
+---application.yml:---
+my:
+ code:
+  version:
+   -V1
+   -V2
+   -V3
+=>Key=value format Map/Properties Style:
+
+=>Consider below example:
+=>Its equal properties file will be
+
+Ex:-- application.properties
+my.data.model.a1=6.6
+my.data.model.a2=8.6
+my.data.model.a3=9.6
+
+=>Its equal : application.yml file
+my: 
+ data:
+  model:
+   a1: 6.6
+   a2: 8.6
+   a3: 9.6
+
+
+Spring Boot Profiles:--
+
+=>In RealTime, Application is 
+Developed in =>Dev Environment
+Tested in =>Quality Analyst (QA) Environment
+Maintained in =>PROD Environment
+Client tested in =>UAT Environment
+Go live in =>Cloud / prod Environment
+
+Environment is place where our application is running or what is current state of 
+application
+Example:
+ dev= development
+ QA = Quality Analysis,
+ MS = Management Service, 
+ PROD = Production
+ UAT = User acceptance Testing
+ Cloud = Cloud Environment
+
+In this case we should not modify existed properties file, use new one with key=val data. 
+File naming rule is: 
+application-{profile}.properties
+application-{profile}.yml 
+
+
+Profile Code  	Properties File  		Class level Annotation
+------------	-----------------		----------------------
+Default      	application.properties 		@Profile(“default”)
+Prod 		application-prod.properties 	@Profile(“prod”)
+Uat 		application-uat.properties 	@Profile(“uat”)
+Qa 		application-qa.properties 	@Profile(“qa”)
+Cloud 		application-cloud.properties  	@Profile(“cloud”)
+
+
+
+=>We can provide using 3 ways. 
+Those are
+
+a> Command Line Arguments (Option Arguments)
+--spring.profiles.active=prod
+
+b>In application.proeprties
+ Ex:-- spring.profiles.active=prod
+
+c> VM (JVM/System) Argument:--
+Ex:
+-Dspring.profiles.active=prod
+
+=>Right click on Starter class => Run As=>
+Run Config =>Choose Arguments
+=>Enter below format in VM Arguments
+ -Dspring.profiles.active=prod
+=>apply and Run
+
+
