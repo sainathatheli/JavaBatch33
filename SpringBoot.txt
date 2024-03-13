@@ -302,3 +302,667 @@ Run Config =>Choose Arguments
 =>apply and Run
 
 
+SPRING BOOT DATA JPA
+====================
+Introdution about Data-JPA:
+
+1)
+Data JPA provides @NoRepositoryBean (S) which is auto configured and self logic 
+implemented for basic operations i.e : Programmer not required to write any logic for 
+basic operations (No Implementation class and method).
+
+=>Configuration for DataSource (I), SessionFactory (I), HibernateTemplate (C) 
+Hibernate TransactionManger (C) all are not required.
+
+=>When we add bellow dependency in pom.xml it will download Jars and above Config 
+code given from parent Project.
+
+<dependency>
+ <groupId>org.springframework.boot</groupId>
+<artifactId>Spring-boot-starter-data-jpa</artifactId>
+</dependency>
+
+2)
+Data JPA provides "Embedded Database Support". It means Database provided in 
+application itself.
+
+=>Spring Boot supports 3 Embedded DBs. Those are : H2, HSQLDB, Apache Derby.
+
+=>We can use any one Embedded Database which runs in RAM (Temp memory).
+
+=>It uses hbm2ddl.auto=create-drop i.e Tables created when App starts and deleted 
+before App Stops.
+
+=>These DBs are used in both Development and Testing Environment, but not in 
+Production.
+
+3)Spring Boot also supports Both SQL (MySQL, Oracle) and NoSQL (MongoDB)
+Database etc.. also.
+
+4)Data JPA Supports Special concept “Query Methods an easy way to code and fetch 
+data from DB” (ex : findBy, @Query).
+
+5)Data JPA supports Easy Connection Pooling (Auto Config) concept.
+
+6)Data JPA supports Cache Management (AutoConfig).
+
+Repository Interfaces:
+----------------------
+Data JPA has provided Repository Interfaces in package 
+"org.springframework.data.repository"
+
+Repository (I)
+   |
+   | extends         
+   |
+CrudRepository (I)
+   |
+   |  extends
+   |
+PagingAndSortingRepository(I)
+   |
+   |  extends
+   |
+JpaRepository(I)
+
+Note:
+=====
+Primary key data Type must be Wrapper class or any other classes which implements java.io.Serializable.
+
+Primitive Types are not accepted as PK DataType for model & for Repository Coding
+
+
+For Embedded Database:
+----------------------
+<!-- H2 Database -->
+<dependency>
+ <groupId>com.h2database</groupId>
+ <artifactId>h2</artifactId>
+ <scope>runtime</scope>
+</dependency>
+
+and one more you need to select springdatajpa
+
+methods:
+--------
+Method Descriptions:--
+1>save (obj) :-- Behaves like save or update, If PK exist in DB table then “UPDATE” else 
+“INSERT”.
+
+2>findById(ID): Optional<T> :-- It will return one row as one Object based on Primary 
+key in Optional <T> format.
+=>use methods isPresent() to check record is exist or not? If exist use method get() : T 
+to read object.
+
+3>finadAll () :-- It returns Collection of Objects (=no Of rows in DB Table)
+=>In simple select * from tableName;
+
+4>deleteById(ID) :-- To delete one Row based on PK.
+
+5>deleteAll() :-- To delete all Rows [One by one row]
+
+6>deleteAllInBatch () :-- To delete All rows at a time ex: delete from <tableName>
+
+
+Add in application.properties:
+-------------------------------
+server.port=2019
+spring.jpa.show-sql=true
+spring.h2.console.enabled=true #embedded database h2
+spring.h2.console.path=/h2
+
+
+or
+server.port=2019
+ spring.h2.console.enabled=true
+ spring.datasource.url=jdbc:h2:mem:testdb
+ spring.datasource.driverClassName=org.h2.Driver
+ spring.datasource.username=sa
+spring.datasource.password=
+
+H2 database:
+------------
+H2 is an Embedded database provided by SpringBoot which uses 
+hbm2ddl.auto="create-drop", which means create table when server/app starts and 
+drop all tables when server/app stopped.
+
+=>H2 console works only if use WebApp and default path is : /h2-console, 
+default port : 8080
+
+How to Show Data in H2 DataBase:--
+Step#1:- Execute Program:
+Step#2:- Type Url in Browser (http://localhost:2019/h2)
+
+For MySql:
+----------
+application.properties:
+=======================
+#server.port=2019 #For embedded tomcat server
+spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:msyql://localhost:3306/test
+spring.datasource.username=root
+spring.datasource.password=root
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
+
+
+Example:
+--------
+@Entity //Mandatory
+public class Product {
+@Id //Mandatory
+@GeneratedValue
+private Integer prodId;
+private String prodName;
+private double prodCost;
+private String prodColor;
+
+//super constructor
+public Product() {
+super();
+}
+//Id (PK) based constructor
+public Product(Integer prodId) {
+super();
+this.prodId = prodId;
+}
+//Parameterized constructor without Id(PK)
+public Product(String prodName, double prodCost, String prodColor) {
+super();
+this.prodName = prodName;
+this.prodCost = prodCost;
+this.prodColor = prodColor;
+}
+//Parameterized Constructor with Id (PK)
+public Product(Integer prodId, String prodName, double prodCost, String prodColor)
+{
+super();
+this.prodId = prodId;
+this.prodName = prodName;
+this.prodCost = prodCost;
+this.prodColor = prodColor;
+}
+//setters & getters method
+public Integer getProdId() {
+return prodId;
+}
+public void setProdId(Integer prodId) {
+this.prodId = prodId;
+}
+public String getProdName() {
+return prodName;
+}
+public void setProdName(String prodName) {
+this.prodName = prodName;
+}
+public double getProdCost() {
+return prodCost;
+}
+public void setProdCost(double prodCost) {
+this.prodCost = prodCost;
+}
+public String getProdColor() {
+return prodColor;
+}
+public void setProdColor(String prodColor) {
+this.prodColor = prodColor;
+}
+@Override
+public String toString() {
+return "Product [prodId=" + prodId + ", prodName=" + prodName + ", 
+prodCost=" + prodCost + ", prodColor="+ prodColor + "]";
+}
+}
+
+
+RepositoryClass:
+----------------
+@Repository
+public interface ProductRepository extends JpaRepository<Product,Integer>{
+
+}
+
+
+
+2)starterApp class:
+-------------------
+@Component
+public class BasicOperations implements CommandLineRunner{
+  @Autowired
+private ProductRepository repo;
+@Override
+public void run(String... args) throws Exception {
+/*1.*****************Save*******************/
+//1. Method
+repo.save(new Product("PEN", 6.8, "BLUE"));
+repo.save(new Product("PENCIAL", 5.8, "RED"));
+repo.save(new Product("MOBILE", 5000.8, "BLACK"));
+repo.save(new Product("LAPTOP", 2000.8, "GRAY"));
+/*2.*****************Find*******************/
+//2.1 method.
+Optional<Product> p = repo.findById(3);
+if(p.isPresent())
+ {
+System.out.println(p.get());
+} else {
+System.out.println("No Data found");
+}
+//2.2 Method.
+repo.findAll().forEach((System.out::println));
+
+/*3. *****************Delete****************/
+//3.1 Delete by specific Id
+repo.deleteById(3);
+
+//3.2 Delete all Rows one by one in (Sequence order) 
+repo.deleteAll(); //Multiple Query fired No of record = no of Query
+
+//3.3 Delete all rows in Batch (Single Query fired)
+repo.deleteAllInBatch();
+}
+}
+
+
+
+
+
+
+Query Method in Spring Boot Data:
+----------------------------------
+=Spring Data generates a query based on method written in Repository by programmer.
+
+Types of Query Methods (3):--
+1>findBy
+2>@Query (manual Query)
+3>Special Parameters/ReturnTypes
+
+=>These are used to specify our columns (Projections) and rows (restrictions) details.
+
+1>findBy :-- It will generate select query based on abstract method given by 
+programmer. 
+We can provide columns and rows details.
+
+=>It will be converted to equal SQL query based on Database at runtime.
+Syntax:--
+RT findBy______(Parameters …);
+
+Here, RT = ReturnType, ex: List<T>, T, Object, Page<T>, Slice<T>, Object[], Specific Projection etc.
+
+Spring Boot Data JPA findBy methods (where clause):
+----------------------------------------------------
+Keyword 				Sample 						JPQLsnippet
+-------				------------------------	     ----------------------------------	
+And 				findByLastnameAndFirstname           where x.lastname=?1 and x.firstname = ?2
+
+Or 				findByLastnameOrFirstname	     where x.lastname = ?1 or x.firstname = ?2
+
+
+				findByFirstname,findByFirstnameIs,
+Is,Equals			findByFirstnameEquals                where x.firstname = ?1
+
+Between 			findByStartDateBetween  	     where x.startDate between ?1 and ?2
+
+LessThan 			findByAgeLessThan 			… where x.age < ?1
+
+LessThanEqual 			findByAgeLessThanEqual 			… where x.age <= ?1
+
+GreaterThan 			findByAgeGreaterThan 			… where x.age > ?1
+
+GreaterThanEqual 		findByAgeGreaterThanEqual 		… where x.age >= ?1
+
+After 				findByStartDateAfter 			… where x.startDate > ?1
+
+Before 				findByStartDateBefore 			… where x.startDate < ?1
+
+IsNull 				findByAgeIsNull 			… where x.age is null
+
+IsNotNull,NotNull 		findByAge(Is)NotNull 			… where x.age not null
+
+Like 				findByFirstnameLike 			… where x.firstname like ?1
+
+NotLike 			findByFirstnameNotLike 			… where x.firstname not like ?1
+
+StartingWith 			findByFirstnameStartingWith		… where x.firstname like ?1
+									(parameter bound with appended %)
+
+EndingWith 			findByFirstnameEndingWith		… where x.firstname like ?1
+									(parameter bound with preended %)
+
+Containing 			findByFirstnameContaining		… where x.firstname like ?1
+									(parameter bound wrapped in %)
+
+OrderBy 			findByAgeOrderByLastnameDesc		… where x.age = ?1 order by x.lastname 												          desc
+
+Not 				findByLastnameNot 			… where x.lastname <> ?1
+
+In 				findByAgeIn(Collection<Age> ages) 	… where x.age in ?1
+
+NotIn				findByAgeNotIn(Collection<Age> ages) 	… where x.age not in ?1
+
+True 				findByActiveTrue() 			… where x.active = true
+
+False 				findByActiveFalse() 			… where x.active = false
+
+
+IgnoreCase 			findByFirstnameIgnoreCase		… where UPPER(x.firstame) = UPPER(?1)
+
+
+Example:
+--------
+
+application.properties:
+=======================
+server.port=2019
+spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:msyql://localhost:3306/test
+spring.datasource.username=root
+spring.datasource.password=root
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
+
+
+Model class (Product.class):
+----------------------------
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+
+import javax.persistence.Table;
+@Entity
+@Table(name="product")
+public class Product {
+@Id
+@GeneratedValue
+private Integer prodId;
+private String prodCode;
+private String prodName;
+private double prodCost;
+//super constructor
+public Product() {
+super();
+}
+//Id (PK) based constructor
+public Product(Integer prodId) {
+super();
+this.prodId = prodId;
+}
+//Parameterized constructor
+public Product(String prodName, double prodCost, String prodCode) {
+super();
+this.prodName = prodName;
+this.prodCost = prodCost;
+this.prodCode = prodCode;
+}
+public Product(Integer prodId, String prodName, double prodCost, String prodCode)
+{
+super();
+this.prodId = prodId;
+this.prodName = prodName;
+this.prodCost = prodCost;
+this.prodCode = prodCode;
+}
+//setters & getters method
+public Integer getProdId() {
+return prodId;
+}
+public void setProdId(Integer prodId) {
+this.prodId = prodId;
+}
+public String getProdName() {
+return prodName;
+}
+public void setProdName(String prodName) {
+this.prodName = prodName;
+}
+public double getProdCost() {
+return prodCost;
+}
+public void setProdCost(double prodCost) {
+this.prodCost = prodCost;
+}
+public String getProdCode() {
+return prodCode;
+}
+public void setProdCode(String prodCode) {
+this.prodCode = prodCode;
+}
+@Override
+public String toString() {
+ return "Product [prodId=" + prodId + ", prodCode=" + prodCode + ", 
+prodName=" + prodName + ", prodCost="+ prodCost + "]";
+}
+}
+
+Repository Interface (ProductRepository.class):
+===============================================
+import java.util.Collection;
+import java.util.List;
+mport org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import com.app.model.Product;
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Integer> {
+//select * from prodtab where prod_code=prodCode;
+Product findByProdCode(String prodCode);
+//select * from prodtab where prod_code like prodCode
+List<Product> findByProdCodeLike (String pc);
+//select * from prodtab where prod_code is null
+List<Product> findByProdCodeIsNull();
+//select * from prodtab where prod_cost=cost
+List<Product> findByProdCostGreaterThan(Double cost);
+//select * from prodtab where prod_cost in (cost)
+List<Product> findByProdCostIn(Collection<Double> costs);
+//select * from prodTab where pid=? Or pcost=?
+List<Product> findByProdIdOrProdCost(Integer pid, Double cost);
+//select * from prodtab where pid between pid1 and pid2
+List<Product> findByProdIdBetween (Integer pid1, Integer pid2);
+//select * from prodtab where p_cost=? Order by prod_code asc 
+List<Product> findByProdCostLessThanOrderByProdCode(Double cost);
+//Select * from prodtab where pid<=? And pcost>=? And vendor is not null order by 
+pcode;
+//List<Product> 
+findByProdIdLessThanAndProdCostGreaterThanAndVendorNotNullOrderByProdCode
+(Integer prodId, Double prodCost);
+}
+
+
+@Component
+public class FindByRunner implements CommandLineRunner
+{
+@Autowired
+private ProductRepository repo;
+
+@Override
+public void run(String... args) throws Exception {
+Product p = repo.findByProdCode("A");
+System.out.println(p);
+repo.findByProdCodeIsNull().forEach((System.out::println));
+ }
+}
+
+
+2>@Query(“hql”):
+
+This is used to perform (Hibernate Query Language) operations,
+works for both select and non-select operations.
+
+=>To pass where clause inputs use positional parameters in style ?1, ?2, ?3….
+ Or
+Named parameters in style [:name]
+:a, :b, :c, :hello, : mydata
+
+=>But variable name must be same as named parameter.
+
+=>Providing package name for Model class in @Query is optional. 
+i.e. select p from com.app.model.Product, select p from Product (are same)
+
+Example:
+========
+application.properties:
+=======================
+server.port=2019
+spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:msyql://localhost:3306/test
+spring.datasource.username=root
+spring.datasource.password=root
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
+
+
+Model class(Product.java):
+--------------------------
+import javax.persistence.Entity;
+import javax.persistence.Id;
+@Entity
+public class Product {
+@Id
+private Integer prodId;
+private String vendorCode;
+private String prodName;
+private Double prodCost;
+public Product() {
+super();
+}
+public Product(Integer prodId) {
+super();
+this.prodId = prodId;
+}
+public Product(Integer prodId, String vendorCode, String prodName, Double prodCost) 
+{
+super();
+this.prodId = prodId;
+this.vendorCode = vendorCode;
+this.prodName = prodName;
+this.prodCost = prodCost;
+}
+//Setters and Getters method
+public Integer getProdId() {
+return prodId;
+}
+public void setProdId(Integer prodId) {
+this.prodId = prodId;
+}
+public String getVendorCode() {
+return vendorCode;
+}
+public void setVendorCode(String vendorCode) {
+this.vendorCode = vendorCode;
+}
+public String getProdName() {
+return prodName;
+}
+public void setProdName(String prodName) {
+this.prodName = prodName;
+}
+public Double getProdCost() {
+return prodCost;
+}
+public void setProdCost(Double prodCost) {
+this.prodCost = prodCost;
+}
+@Override
+public String toString() {
+return "Product [prodId=" + prodId + ", vendorCode=" + vendorCode + ", 
+prodName=" + prodName + ", prodCost="+ prodCost + "]";
+}
+}
+
+
+ProductRepository:
+------------------
+Add below method in repository:--
+
+import java.util.List;
+import javax.transaction.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Integer> {
+//select * from product where ven_code=?
+//or prodCost>?
+@Query("select p from Product p where p.vendorCode=:a or p.prodCost>:b")
+List<Product> getAllProducts(String a, Double b);
+//select prodCode from product where vendor vendorCode=? or prodCost=?
+@Query("select p.vendorCode from Product p where p.vendorCode=?1 or
+ p.prodCost=?2")
+List<String> getAllProductsCodes(String a, Double b); 
+//select prodCode, prodCost from product
+@Query("select p.vendorCode, p.prodCost from com.app.model.Product p")
+List<Object[]> getAllProductData();
+/***************NON-Select Operation********************/
+@Modifying //non-select operation
+@Transactional //service Layer
+@Query("update Product p set p.vendorCode=:a, p.prodCost=:c where 
+ p.prodId=:b")
+void updateMyData(String a, Double c, Integer b);
+@Modifying //non-select operation
+@Transactional //service Layer
+@Query("delete from Product p where p.prodId=:prodId") 
+void deleteMyData(Integer prodId);
+}
+
+Select Operation Using QueryParam:
+===================================
+@Component
+public class SelectOperationUsingQueryParam implements CommandLineRunner {
+@Autowired
+private ProductRepository repo;
+@Override
+public void run(String... args) throws Exception {
+//Normal Method
+/*repo.save(new Product(10, "A", "PEN", 10.5));
+repo.save(new Product(20, "B", "PENCIAL", 50.5));
+repo.save(new Product(30, "C", "MOBILE", 700.5));
+repo.save(new Product(40, "D", "LAPTOP", 1000.5));
+repo.save(new Product(50, "E", "MOUSE", 500.5));
+List<Product> p = repo.getAllProducts("A", 56.98);
+for(Product p1:p) {
+ System.out.println(p1);
+}
+//JDK 1.5
+List<Object[]> obs=repo.getAllProductData();
+for(Object[] ob:obs) {
+ System.out.println(ob[0]+","+ob[1]);
+}
+ System.out.println("For Each loop");*/
+//JDK 1.8 (Streams + Lambda+Method Reference)
+ repo.getAllProductData().stream().map((ob)-> 
+ob[0]+","+ob[1]).forEach(System.out::println); 
+}
+}
+
+
+@Query(“”) non-select operations:
+---------------------------------
+=>To perform non-select operation define HQL(Query) and apply @Modifying and 
+@Transaction over @Query method.
+
+=>@Transaction can be applied over repository method or in service layer method.
+
+ProductRepository code:
+------------------------
+@Modifying //non-select operation
+
+@Transactional //service Layer
+@Query(“update Product p set p.prodCode=:a, p.prodCost=:c where p.prodId=:b”)
+void updateMyData(String a, Double c, Integer b);
+
+@Modifying //non-select operation
+@Transactional //service Layer
+@Query(“delete from Product p where p.prodId=:prodId) 
+void deleteMyData(Integer prodId);
+
+4.2 Non-Select Operation Using QueryParam:
+-------------------------------------------
+=>Add respected method in controller/CommandLineRunner implemented class class.
+repo.updateMyData("E", 900.0, 80);
+repo.deleteMyData(10);
+
+
