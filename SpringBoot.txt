@@ -966,3 +966,715 @@ repo.updateMyData("E", 900.0, 80);
 repo.deleteMyData(10);
 
 
+SPRING BOOT WEB-MVC:
+====================
+1. Introduction:--
+=>Spring Boot has provided one starter for web application. 
+=>It is similar to spring WEB MVC execution process but reduces work done by 
+programmer for,
+ a. Maven project creation and setup.
+ b. Pom.xml dependencies and plugins.
+ c. Writing common code (AppInit, AppConfig).
+ d. Handle Runtime Environment and creating JAR/WARs.
+
+
+=>Such process is taken care by spring boot and called as “AutoConfiguration”.
+
+=>Even coming to Handler Mapping is configured by FC.
+
+=>ViewResovler needs not to be configured. But Programmer has to provide (Prefix 
+and Suffix) using properties/yml file.
+
+=>FC (DispatcherServlet) is configured by spring boot and mapped to URL = “/”.
+
+=>FC, ViewResolver, HandlerMapper taken care by Boot, Controller and UI files should 
+be defined by Programmer.
+
+Data Rendering:
+---------------
+Reading data from Model (I) or ModelMap(C) at runtime and send 
+to UI is known as Data Rendering, It is implemented using EL Programming.
+
+=>Programmer should provide inputs like port number view resolver details using 
+Properties or yml file. 
+
+Example files like:
+--------------------
+application.properties:--
+server.port=9898
+spring.mvc.view.prefix=/WEB-INF/views/
+spring.mvc.view.suffix=.jsp
+
+=>Default port no mapped to ‘8080’ by using key ‘server.port’. We can change even.
+
+=>Spring boot has provided 3 embedded servers. [No download and No install]
+Those are : Tomcat (default server), Jetty and Undertow.
+
+=>In General Tomcat container 2 engines Servlet Engine (Catalina) and JSP Engine 
+(JASPER). In Spring boot, tomcat comes with only Servlet engine. 
+That’s why it is also called as light weight engine that works for “DispatcherServlet”, nothing else.
+
+=> Default Static Resource Handler is added to folder static and template which are 
+provided under src/main/resources folder.
+
+=>To work with JSP files in Spring Boot WEB apps, we need to add dependencies in 
+pom.xml.
+
+<dependency>
+ <groupId>org.apache.tomcat.embed</groupId>
+ <artifactId>tomcat-embed-jasper</artifactId>
+ <scope>provided</scope> //Version taken care by Spring boot (and Tomcat)
+</dependency>
+
+=>To avoid/remove tomcat server (default server) from Boot application, we need to 
+add <Exclusion> for Tomcat under web dependency. 
+
+Given as,
+
+<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-web</artifactId>
+ <exclusions>
+ <exclusion>
+ <groupId>org.springframework.boot</groupId>
+ <artifactId>spring-boot-starter-tomcat</artifactId>
+</exclusion>
+ </exclusions>
+</dependency>
+
+=>To use jetty in spring boot, first we need to exclude ‘tomcat’, then add below 
+dependency in pom.xml.
+
+<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-jetty</artifactId>
+</dependency>
+
+=>In case of ‘JBoss Undertow Server’ add below dependency.
+<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-undertow</artifactId>
+</dependency>
+
+=>Tomcat provided by Apache.
+=>Jetty Provided by Eclipse.
+=>Undertow provided by JBoss.
+
+=>Final packing of Spring Boot Application: after coding and unit testing, our project 
+will be converted to JAR/WAR based on <packing> type selected while creating project.
+
+Execute commands:
+
+Step#1:- Do JDK setup.
+
+Step#2:- Clear target folder.
+
+Step#3:- Generate jar/war file.
+
+=>Refresh target folder after message “build success”. 
+
+=>If pom.xml contains <packing>war</packing> then it will be converted to 
+[ProjectName]-[version].war 
+
+=>Else it is considered as jar
+[ProjectName]-[version].jar
+
+=>To indicate Spring container, spring f/w has provided two container interfaces. 
+Those are.
+ a. BeanFactory (I) [Legacy]
+ b. ApplicationContext (I) [new]
+
+=>In Spring boot programming, for stand-alone type application impl class used 
+“AnnotationConfigApplicationContext”.
+
+=>For Spring Boot web and related application impl class used: 
+“AnnotationConfigServletWebServerApplicationContext”.
+
+Note:
+----
+=>Here, basePackage must be provided by programmer. If we are using Spring boot 
+then ‘basePackage’ is set to Spring Boot Starter class package.
+
+=>All our classes which are annotated with StereoType annotation must be under 
+starter class package or its sub package.
+
+=>All our classes which are annotated with stereotype annotations must be under 
+starter class manually. It is not a good approach.
+
+=>We can run Starter class only one time if type is web application with one port 
+number.
+
+=>If we want to run again, then must stop last process which is already running.
+ ->Goto Console option.
+ ->Look at Console Symbol (red square box).
+ ->Click on DropDown (In case of multiple).
+ ->Click on Red Color Box Symbol (Stop Symbol).
+
+
+=>URL gets changed from server to server where as URI remains same.
+
+=>If URL doesn’t contain any PORT number then default mapped to ‘80’ [HTTP Default 
+port number].
+
+Ex:-- http://locahost/MyApp/show
+
+->In above example PORT number is : 80
+***It means if server is running on PORT number: 80, then PORT number not required 
+to write in URL.
+
+Ex#1:--
+
+application.properties:
+-----------------------
+server.port=9898
+server.servlet.context-path=/myapp
+spring.application.name=SAMPLEAPP
+
+=>then sample URL : http://localhost:9898/myapp
+
+Ex#2:--
+
+application.properties:
+-----------------------
+server.port=80
+server.servlet.context-path=/myapp
+=>then sample URL : http://localhost:80/myapp or
+http://localhost:/myapp
+
+Ex#3:
+------
+application.properties:
+-----------------------
+server.servlet.context-path=/myapp
+=>Then Sample URL : http://localhost:8080/myapp
+
+
+Where to place CSS/JS/HTML files in Spring Boot web applications
+----------------------------------------------------------------
+Ex:
+---
+
+SpringBootWebMvc
+|
+|
+|_______src/main/resources
+|	|
+|	|_____static
+|	|	|
+|	|	|_*.css,*.js,*.html etc
+|	|
+|	|_____templates
+|		|
+|		|_UIFiles(Dynamic pages),Thymeleaf,Velocity,...etc.
+	
+
+Coding Steps:
+--------------
+To Develop SpringWebMvc Application
+
+Step#1:
+
+Create one Spring Boot Starter application and choose dependencies 'Spring Web Starter'.
+
+Spring Boot Web-MVC Dependency:
+
+<dependency>
+ <groupId>org.springframework.boot</groupId>
+ <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+
+Step#2:
+Open pom.xml file and add below dependency to work with JSP pages only.
+
+<dependency>
+ <groupId>org.apache.tomcat.embed</groupId>
+ <artifactId>tomcat-embed-jasper</artifactId>
+ <scope>provided</scope>
+</dependency>
+
+Step#3:
+
+Define application.properties given below
+
+## Server keys ##
+server.port=9898
+
+#it will act as project name
+server.servlet.context-path=/myapp
+
+## View Resolver Keys ##
+spring.mvc.view.prefix=/WEB-INF/views/
+spring.mvc.view.suffix=.jsp
+
+Step#4:
+-------
+Create folders
+
+a. webapp folder under main
+b. WEB-INF under webapp
+c. views under WEB-INF
+
+Step#5:
+-------
+Define Controller class under 'src/main/java'
+
+EmployeeController.java
+------------------------
+@Controller
+@RequestMapping("emp")
+public class EmployeeController {
+
+@RequestMapping("show")
+public String showPages(Model m) {
+m.addAttribute("msg", "Welcome App:" +new Date());
+return "Home";
+}
+}
+
+Step#6:
+--------
+Define JSP Page under 'views' folder
+
+Home.jsp:--
+<html><body><h2>Welcome to Boot!!</h2>
+ ${msg}
+</body></html>
+
+
+** Run Starter class and Enter URL in Browser
+http://localhost:9898/myapp/emp/show
+
+What is the difference between Model (I) and ModelMap (C) ?.
+A> ModelMap:
+It is a shared Memory holds data in key=val which allocates 
+memory based on data added to it In simple onDemand Memory Creation.
+
+B> Model:
+Model also similar to ModelMap, but un-used key=val pairs (at UI) are 
+removed from memory.
+
+NOTE: In above example “AppInt” and AppConfig” are provided by spring Boot.
+Annotation like @EnableWebMvc, @ComponentScan, @PropertySource not required 
+to provide.
+
+
+Example2:
+=========
+Spring Boot Development to Deployment Process (End-to-end Application process)
+
+SpringBoot+WEB MVC +Data JPA + MySQl (or any Embedded Data).
+
+Starters are:
+--------------
+SpringWeb
+SPRINGDATAJPA
+MYSQL
+JSP:
+<dependency>
+ <groupId>org.apache.tomcat.embed</groupId>
+ <artifactId>tomcat-embed-jasper</artifactId>
+ <scope>provided</scope>
+</dependency>
+
+SpringBoot+WEB MVC +Data JPA + MySQl (or any Embedded Data).
+------------------------------------------------------------
+for jstl in jsp add this jar in pom.xml file
+
+		<dependency>
+			<groupId>jakarta.servlet.jsp.jstl</groupId>
+			<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+		</dependency>
+	<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>glassfish-jstl</artifactId>
+			<version>11.0.12</version>
+		</dependency>
+
+
+1. application.properties:
+##Server##
+server.port=2024
+server.servlet.context-path=/myapp
+##WEB MVC##
+spring.mvc.view.prefix=/WEB-INF/views/
+spring.mvc.view.suffix=.jsp
+##DataSource##
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://localhost:3306/testDB
+spring.datasource.username=root
+spring.datasource.password=root
+
+
+##JPA##
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+spring.jpa.properties.hibernate.format_sql=true
+
+or
+
+application.yml:
+----------------
+##Server##
+server:
+ port: 2019
+ servlet:
+  context-path: /myapp
+
+##WEB MVC##
+spring:
+ mvc:
+  view:
+   prefix: /WEB-INF/views/
+   suffix: .jsp
+
+##DataSource##
+spring
+ datasource
+  driver-class-name:com.mysql.cj.jdbc.Driver
+  url:jdbc:mysql://localhost:3306/testDB
+  username:root
+  password:root
+
+spring
+ jpa
+  show-sql:true
+  hibernate
+   ddl-auto:update
+  properties
+   hibernate
+    dialect:org.hibernate.dialect.MySQL8Dialect
+    format_sql=true
+
+Model class (Product.java):
+----------------------------
+package com.training.model
+
+@Entity
+@Table(name="PRODUCTTAB")
+public class Product {
+
+@Id
+@Column(name="id")
+private Integer id;
+
+@Column(name="code")
+private String code;
+
+@Column(name="name")
+private String name;
+
+@Column(name="cost")
+private Double cost;
+
+@Column(name="gst")
+private String gst;
+
+@Column(name="note")
+private String note;
+
+//constructor
+//Getters and Setters
+
+}
+
+
+Repository Interface (ProductRepository.java):
+----------------------------------------------
+package com.training.repo;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import com.training.model.Product;
+@Repository
+public interface ProductRepository extends JpaRepository <Product, Integer> {
+Product getProductById(Integer id);
+}
+
+
+ Service Interface (ProductService.java):
+-------------------------------------------
+
+package com.training.service;
+
+import java.util.List;
+import com.training.model.Product;
+public interface ProductService {
+public Integer saveProduct(Product p);
+public List<Product> getAllProducts();
+public void deleteProduct(Integer id);
+public Product getProductById(Integer id);
+}
+
+Service Impl class (ProductServiceImpl.java):
+-----------------------------------------------
+package com.training.service;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.training.model.Product;
+import com.training.repo.ProductRepository;
+import com.training.service.ProductService;
+
+@Service
+public class ProductServiceImpl implements ProductService {
+
+@Autowired
+private ProductRepository repo;
+
+//1. Save method
+@Transactional
+public Integer saveProduct(Product p) {
+//calculations here..
+//gstAmt= cost*gst/100
+//totalAmt=cost+ gstAmt - disc
+p=repo.save(p);
+return p.getId();
+}
+//2. Get all Product details from Database
+@Transactional(readOnly= true)
+public List<Product> getAllProducts() {
+return repo.findAll();
+}
+//3. Delete Record based on ID
+@Transactional
+public void deleteProduct(Integer id) {
+repo.deleteById(id);
+}
+//4. Get Record based on ID
+@Transactional
+public Product getProductById(Integer id) {
+return repo.getProductById(id);
+}
+}
+
+Controller class (ProductController.java):
+------------------------------------------
+package com.training.controller;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import com.training.model.Product
+
+import com.training.service.ProductService;
+@Controller
+@RequestMapping("/emp")
+public class ProductController {
+@Autowired
+private ProductService service;
+//1. Show Product Form with Backing Object
+@RequestMapping("/reg")
+public String showReg(Model map) {
+//Form Backing Object
+map.addAttribute("product", new Product());
+return "Register";
+}
+//2. Read Form Data on click submit
+@RequestMapping(value="/save",method=RequestMethod.POST)
+public String saveData(@ModelAttribute Product product, Model map)
+{
+//call service layer
+Integer id=service.saveProduct(product);
+map.addAttribute("message", "Product '"+id+"' created!!");
+//clean Form Backing Object
+map.addAttribute("product", new Product());
+return "Register";
+}
+//3. Fetch all Rows from DB to UI
+@RequestMapping("/all")
+public String showAll(Model map) {
+//fetch all rows from DB
+List<Product> obs=service.getAllProducts();
+//send to UI
+map.addAttribute("list", obs);
+return "Data";
+}
+
+
+//4. Delete row based on ID
+@RequestMapping("/delete")
+public String remove(@RequestParam Integer id) {
+//delete row based on ID
+service.deleteProduct(id);
+//response.sendRedirect
+return "redirect:all";
+}
+//5.Show edit Page
+@RequestMapping(value="edit")
+public String showEdit(@RequestParam Integer id, Model map)
+{
+ //Load Objet from DB
+ Product p =service.getProductById(id);
+ //From BACKING OBJECT
+ map.addAttribute("product", p);
+ map.addAttribute("Mode", "EDIT");
+ return "Register";
+}
+}
+
+ Register.jsp:
+------------
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+ pageEncoding="ISO-8859-1" isELIgnored="false"%>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<!DOCTYPE html>
+<html><head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<h3>WELCOME TO PRODUCT REGISTER</h3>
+<form:form action="save" method="POST" modelAttribute="product">
+<pre>
+CODE : <form:input path="code"/><br>
+NAME : <form:input path="name"/><br>
+COST : <form:input path="cost"/><br>
+GST : <form:select path="gst"><br>
+<form:option value="5">5%-SLAB</form:option>
+<form:option value="12">12%-SLAB</form:option>
+<form:option value="18">18%-SLAB</form:option>
+<form:option value="22">22%-SLAB</form:option>
+<form:option value="30">30%-SLAB</form:option>
+</form:select><br>
+NOTE : <form:textarea path="note"/><br>
+<input type="submit" value="CREATE PRODUCT"/>
+</pre>
+</form:form>
+${message}
+</body>
+</html>
+
+ Data.jsp (To Display all records in browser):
+----------------------------------------------
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+ pageEncoding="ISO-8859-1"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<h3>WELCOME TO PRODUCT DATA</h3>
+<table>
+<tr>
+<th>ID</th>
+<th>CODE</th>
+<th>NAME</th>
+<th>COST</th>
+<th>GST</th>
+<th>NOTE</th>
+<th colspan=2>OPERATIONS</th>
+</tr>
+
+<c:forEach items="${list}" var="ob">
+<tr>
+<td><c:out value="${ob.id}"/> </td>
+<td><c:out value="${ob.code}"/> </td>
+<td><c:out value="${ob.name}"/> </td>
+<td><c:out value="${ob.cost}"/> </td>
+<td><c:out value="${ob.gst}"/> </td>
+<td><c:out value="${ob.note}"/> </td>
+<td>
+<a href="delete?id=${ob.id}">DELETE</a>
+<a href="edit?id=${ob.id}">EDIT</a>
+</td>
+</tr>
+</c:forEach>
+</table>
+</body></html>
+
+
+
+=>Run the application and type below URL one by one
+1>http://localhost:2024/myapp/emp/reg
+2>http://localhost:2024/myapp/emp/all
+
+
+
+
+Code: For Edit Operation :
+--------------------------
+Step#1:- Add below Hyperlink in Data.jsp
+<td><a href="edit?id=${ob.id}">EDIT</a></td>
+
+
+Step#2:- Add below method in ProductController
+//5.Show Edit Page
+@RequestMapping("edit")
+public String showEdit(@RequestParam Integer id, Model map)
+ {
+//Load Objet from DB
+Product p =service.getProductById(id);
+//From BACKING OBJECT
+map.addAttribute("product", p);
+map.addAttribute("Mode", "EDIT");
+return "Register";
+ }
+
+
+
+#3:-- Do below modifications in “Register.jsp” Add code:
+
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!--Under <form>after<pre> tag)
+<pre>
+-->
+ID : <form:input path="id" readOnly="true"/>
+<c:if>
+=>In button, at submit button place
+<c:choose>
+ <c:when test="${'EDIT' eq Mode}">
+ <input type="submit" value="UPDATE"/>
+</c:when>
+<c:otherwise>
+ <input type="submit" value="CREATE"/>
+</c:otherwise>
+</c:choose>
+
+
+=>After Adding above code in Register.jsp:
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+pageEncoding="ISO-8859-1" isELIgnored="false" %>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%> 
+<!DOCTYPE html>
+<html><head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head><body>
+<h3>WELCOME TO PRODUCT REGISTER</h3>
+<form:form action="save" method="POST" modelAttribute="product">
+<pre>
+ID : <form:input path="id" readOnly="true"/><br>
+CODE : <form:input path="code"/><br>
+NAME : <form:input path="name"/><br>
+COST : <form:input path="cost"/><br>
+GST : <form:select path="gst"><br>
+<form:option value="5">5%-SLAB</form:option>
+<form:option value="12">12%-SLAB</form:option>
+<form:option value="18">18%-SLAB</form:option>
+<form:option value="22">22%-SLAB</form:option>
+</form:select><br>
+NOTE : <form:textarea path="note"/><br>
+<c:choose>
+ <c:when test="${'EDIT' eq Mode}">
+ <input type="submit" value="UPDATE"/>
+</c:when>
+<c:otherwise>
+ <input type="submit" value="CREATE"/>
+</c:otherwise>
+</c:choose> 
+</pre>
+</form:form>
+${message}
+</body></html>
+
