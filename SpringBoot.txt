@@ -2014,7 +2014,7 @@ package com.training.model;
 public class Employee {
 
 @Id
-@GeneratedValue
+//@GeneratedValue
 @Column(name="emp_id")
 private Integer empId;
 
