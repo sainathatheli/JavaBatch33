@@ -1,0 +1,95 @@
+1) Create AWS Free Tier Account
+
+2) Go to EC2 Service and Launch EC2 instance
+
+	-> Choose AMI (Amazon Linux 2 AMI) & Click on Select
+	
+	-> Select t2.micro & Click Configure Instance Details
+	
+	-> Click on Add Storage
+	
+	-> Click on Add Tags
+	
+	-> Click On Configure Security Group (by default SSH available on Port 22)
+		(Add Custom TCP with 9090 port number)
+		
+    -> Review & Launch 
+
+	-> Download New Key Pair (give some name)
+	
+	-> Click On Launch
+	
+	-> Go to EC2 Dashboard and see Instance Running
+	
+	-> Select that instance and see Public IP
+	
+	
+Connect to Linux Machine Using Putty Software
+==============================================	
+
+3) Download Putty Software
+
+4) Convert PEM File to PPK File using PuttyGen Software
+	
+5) Connect to EC2 using Putty software or mobaxterm
+
+6) Install Java 1.8 version in EC2 Machine
+
+	$ sudo su -> (switch to super user)
+
+    	$ yum install java-1.8.0-openjdk -> (to install java)
+	
+	$ java version ->  (to check version of java)
+	
+7) Choose Java 1.8 version 
+
+    $ alternatives --config java
+	
+8) 	In AWS, Go to S3 and Create a new bucket
+
+9) Enter Bucket Name
+
+10) Select Object ownership as 'ACL Enabled'
+
+11) Uncheck Block All Public Access checkbox and Create Bucket
+
+12) Select the Bucket Name and Upload our spring boot application jar into s3 bucket
+
+13) Select Jar file Name -> Actions -> Make Public using ACL
+
+14) Copy the URL of Jar
+
+15) Fetch the jar from s3 bucket to EC2 instance using below command
+
+      $ wget <path>
+
+16) Check the jar presence in Ec2 machine using ls command 
+
+		$ ls -l
+
+17) Execute the jar file using below command 
+
+		$ java -jar <jar-file-name>
+		
+18) Access our application with Ec2 IP address in browser
+
+		URL : http:ip:9090/welcome
+
+
+
+
+
+Jar file URL
+--------------
+https://myspringbootbuckett.s3.ap-south-1.amazonaws.com/sb-rest-api.jar
+
+
+
+
+
+
+
+
+
+
+
