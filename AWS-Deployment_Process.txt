@@ -38,10 +38,14 @@ Connect to Linux Machine Using Putty Software
 	$ sudo su -> (switch to super user)
 
     	$ yum install java-1.8.0-openjdk -> (to install java)
+
+or latest version 
+
+sudo yum install java-17-amazon-corretto-devel
 	
 	$ java version ->  (to check version of java)
 	
-7) Choose Java 1.8 version 
+7) Choose Java 1.8 version or java 17
 
     $ alternatives --config java
 	
@@ -78,18 +82,61 @@ Connect to Linux Machine Using Putty Software
 
 
 
-
 Jar file URL
 --------------
-https://myspringbootbuckett.s3.ap-south-1.amazonaws.com/sb-rest-api.jar
+sample url:
+-----------
+https://bucketname.s3.regionname/filename.jar
+
+https://myawsspringbucket1.s3.ap-south-1.amazonaws.com/springRestBasicWithAws-0.0.1-SNAPSHOT.jar
 
 
 
+To Install mysql In ec2:
+========================
+#  this command updates all packages to the latest version
+sudo yum update -y 
+
+# this command installs MySQL server on your machine, it also creates a systemd service
+sudo yum install -y mariadb-server
+
+# this command enables the service created in previous step
+sudo systemctl enable mariadb
+
+# this command starts the MySQL server service on your Linux instance
+sudo systemctl start mariadb
+
+# this command helps you to set root user password and improve your DB security
+sudo mysql_secure_installation
+
+
+# Here, just hit enter as we have not set any password yet
+Enter current password for root (enter for none): 
+
+# Here, reply with Y
+Set root password [Y/n]
+
+# Enter new password
+New Password:
+
+# Re-enter new password
+Re-enter new Password:
+
+## Say Y
+Remove anonymous users? [Y/n]
+
+## Say Y
+Disallow root login remotely? [Y/n]
+
+## Say N, as we would need them for verification 
+Remove test database and access to it? [Y/n] y
+
+## Say Y
+Reload privilege tables now? [Y/n] y
 
 
 
-
-
+mysql -h localhost -u root -p
 
 
 
